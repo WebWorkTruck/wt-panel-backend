@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger'
 
-class ProductDto {
+export class ProductDto {
     @ApiProperty()
     indcode: string
 
