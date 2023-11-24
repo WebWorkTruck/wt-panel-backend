@@ -62,8 +62,7 @@ export class ProductsController {
         return this.productsService.changeProductInAppSale(
             body.id,
             body.indCode,
-            body.pose,
-            body.type
+            body.pose
         )
     }
 }
