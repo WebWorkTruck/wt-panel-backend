@@ -15,7 +15,7 @@ import {
 export class PanelService {
     constructor(private readonly httpService: HttpService) {}
 
-    private ONE_C_URL = 'http://192.168.0.223/test/hs/wt_panel'
+    private ONE_C_URL = process.env.URL_ONE_C
     private TYPES = ['Заявка', 'Продажа']
 
     async getBadApplications(userId: string): Promise<any> {
@@ -27,18 +27,22 @@ export class PanelService {
             const applications: BadApplication[] = response.data
             return applications
         } catch (error) {
+            console.log(
+                `Ошибка при получении bad-applications - ${error.response?.data}`
+            )
             throw new UnauthorizedException(error.response?.data?.text)
         }
     }
     async getCategories(userId: string): Promise<any> {
-        const url = '/types-application'
+        const url = `${this.ONE_C_URL}/types-application/${userId}`
         try {
-            const response = await firstValueFrom(
-                this.httpService.get(this.ONE_C_URL + url + '/' + userId)
-            )
+            const response = await firstValueFrom(this.httpService.get(url))
             const categories: Category[] = response.data
             return categories
         } catch (error) {
+            console.log(
+                `Ошибка при получении категорий - ${error.response?.data}`
+            )
             throw new UnauthorizedException(error.response?.data?.text)
         }
     }
@@ -59,7 +63,6 @@ export class PanelService {
                         }/${query.count}/${query.text ? query.text : 'false'}`
                     )
                 )
-
                 const sales: ApplicationSaleDto = response.data
                 return sales
             }
@@ -69,7 +72,6 @@ export class PanelService {
                         `${this.ONE_C_URL}/${listApplicationsUrl}/${userId}/${query.page}/${query.count}/${query.title}`
                     )
                 )
-
                 const sales: ApplicationSaleDto = response.data
                 return sales
             }
@@ -79,12 +81,14 @@ export class PanelService {
                         `${this.ONE_C_URL}/${listSaleUrl}/${userId}/${query.page}/${query.count}/${query.title}`
                     )
                 )
+
                 const applicationsAndSales: ApplicationSaleDto = response.data
                 return applicationsAndSales
             }
         } catch (error) {
-            console.log(error)
-
+            console.log(
+                `Ошибка при получении заявок или продаж - ${error.response?.data}`
+            )
             throw new UnauthorizedException(error.response?.data?.text)
         }
     }
@@ -93,12 +97,12 @@ export class PanelService {
         userId: string,
         body: MoveApplicationSaleDto
     ): Promise<any> {
-        const moveApplicationUrl = 'edit-application'
-        const moveSaleUrl = 'edit-sale'
+        const moveApplicationUrl = `${this.ONE_C_URL}/edit-application`
+        const moveSaleUrl = `${this.ONE_C_URL}/edit-sale`
         try {
             const response = await firstValueFrom(
                 this.httpService.post(
-                    `${this.ONE_C_URL}/${
+                    `${
                         body.type === this.TYPES[0]
                             ? moveApplicationUrl
                             : body.type === this.TYPES[1]
@@ -116,6 +120,9 @@ export class PanelService {
             const applicationsAndSales: ApplicationSaleDto = response.data
             return applicationsAndSales
         } catch (error) {
+            console.log(
+                `Ошибка при получении перемещении зявки или продажи - ${error.response?.data}`
+            )
             throw new UnauthorizedException(error.response?.data?.text)
         }
     }
@@ -133,7 +140,8 @@ export class PanelService {
             const sale: ApplicationSaleDto = response.data
             return sale
         } catch (error) {
-            throw new UnauthorizedException(error.response?.data?.text)
+            console.log(`Ошибка при создании продажи - ${error.response?.data}`)
+            throw new UnauthorizedException(error.response?.data)
         }
     }
 
@@ -152,6 +160,9 @@ export class PanelService {
             const bills: any = billsResponse.data
             return { orgs, bills }
         } catch (error) {
+            console.log(
+                `Ошибка при получении Организаций и Счетов - ${error.response?.data}`
+            )
             throw new UnauthorizedException(error.response?.data?.text)
         }
     }
@@ -166,6 +177,9 @@ export class PanelService {
             const failures: any = response.data
             return failures
         } catch (error) {
+            console.log(
+                `Ошибка при получении отклонённых заявок - ${error.response?.data}`
+            )
             throw new UnauthorizedException(error.response?.data?.text)
         }
     }
@@ -179,6 +193,9 @@ export class PanelService {
             const failures: any = response.data
             return failures
         } catch (error) {
+            console.log(
+                `Ошибка при получении возвратных заявок - ${error.response?.data}`
+            )
             throw new UnauthorizedException(error.response?.data?.text)
         }
     }
@@ -192,6 +209,9 @@ export class PanelService {
             const failures: any = response.data
             return failures
         } catch (error) {
+            console.log(
+                `Ошибка при получении пропущенных звонков - ${error.response?.data}`
+            )
             throw new UnauthorizedException(error.response?.data?.text)
         }
     }
@@ -212,8 +232,9 @@ export class PanelService {
             const refusal: any = response.data
             return refusal
         } catch (error) {
-            console.log(error)
-
+            console.log(
+                `Ошибка при получении отклонённых заявок - ${error.response?.data}`
+            )
             throw new UnauthorizedException(error.response?.data?.text)
         }
     }

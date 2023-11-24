@@ -12,16 +12,17 @@ export class AuthService {
         private readonly jwtService: JwtService
     ) {}
 
-    private ONE_C_URL_SIGN_IN = 'http://192.168.0.223/test/hs/wt_panel/sign-in'
+    private ONE_C_URL = process.env.URL_ONE_C
 
     async signInOneC(phone: string, password: string): Promise<any> {
+        const url = `${this.ONE_C_URL}/sign-in`
         const data = {
             phone,
             password,
         }
         try {
             const response = await firstValueFrom(
-                this.httpService.post(this.ONE_C_URL_SIGN_IN, data)
+                this.httpService.post(url, data)
             )
 
             const user: User = response.data
@@ -39,6 +40,9 @@ export class AuthService {
 
             return { accessToken }
         } catch (error) {
+            console.log(
+                `Ошибка при авторизации при помощи 1С - ${error.response?.data}`
+            )
             throw new UnauthorizedException(error.response?.data?.text)
         }
     }

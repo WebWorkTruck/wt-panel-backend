@@ -4,7 +4,6 @@ import { JwtModule } from '@nestjs/jwt'
 import { AuthController } from './auth.controller'
 import { AuthService } from './auth.service'
 import { CookieService } from './cookie.service'
-import { TimeControlService } from 'src/time-control/time-control.service'
 
 @Module({
     imports: [
@@ -16,6 +15,6 @@ import { TimeControlService } from 'src/time-control/time-control.service'
         }),
     ],
     controllers: [AuthController],
-    providers: [AuthService, CookieService, TimeControlService],
+    providers: [AuthService, CookieService],
 })
 export class AuthModule {}

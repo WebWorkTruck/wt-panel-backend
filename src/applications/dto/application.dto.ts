@@ -76,6 +76,12 @@ class ApplicationInfo {
 
     @ApiProperty()
     sum: string
+
+    @ApiProperty()
+    sub_processing: string
+
+    @ApiProperty()
+    porter: string
 }
 
 export class ApplicationResponseDto {

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common'
-import { TimeControlService } from './time-control.service'
 import { TimeControlController } from './time-control.controller'
 import { HttpModule } from '@nestjs/axios'
+import { TimeControlService } from './time-control.service'
 
 @Module({
     imports: [HttpModule],

@@ -11,3 +11,19 @@ export class QueryRequestDto {
     @ApiProperty()
     count: string
 }
+export class IssueProductInSaleReq {
+    @ApiProperty()
+    id: string
+    @ApiProperty()
+    pose: string[]
+}
+export class ChangeProductInAppSale {
+    @ApiProperty()
+    id: string
+    @ApiProperty()
+    type: string
+    @ApiProperty()
+    indCode: string
+    @ApiProperty()
+    pose: string
+}

@@ -76,6 +76,9 @@ class SaleInfo {
 
     @ApiProperty()
     sum: string
+
+    @ApiProperty()
+    sub_processing: string
 }
 
 export class SaleResponseDto {
