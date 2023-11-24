@@ -96,12 +96,7 @@ export class ProductsService {
             throw new UnauthorizedException(error.response?.data?.text)
         }
     }
-    async changeProductInAppSale(
-        id: string,
-        indCode: string,
-        pose: string,
-        type: string
-    ) {
+    async changeProductInAppSale(id: string, indCode: string, pose: string) {
         const url = `${this.ONE_C_URL}/filling-application/${id}`
 
         try {
