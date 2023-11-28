@@ -18,7 +18,7 @@ export class PanelService {
     private ONE_C_URL = process.env.URL_ONE_C
     private TYPES = ['Заявка', 'Продажа']
 
-    async getBadApplications(userId: string): Promise<any> {
+    async getBadApplications(userId: string) {
         const url = '/bad-application'
         try {
             const response = await firstValueFrom(
@@ -28,12 +28,15 @@ export class PanelService {
             return applications
         } catch (error) {
             console.log(
-                `Ошибка при получении bad-applications - ${error.response?.data}`
+                `🤬 Ошибка при получении bad-applications - ${error.response?.data}`
             )
-            throw new UnauthorizedException(error.response?.data?.text)
+            throw new UnauthorizedException(
+                error.response?.data?.text ||
+                    'Технические проблемы, попробуйте позже'
+            )
         }
     }
-    async getCategories(userId: string): Promise<any> {
+    async getCategories(userId: string) {
         const url = `${this.ONE_C_URL}/types-application/${userId}`
         try {
             const response = await firstValueFrom(this.httpService.get(url))
@@ -41,9 +44,12 @@ export class PanelService {
             return categories
         } catch (error) {
             console.log(
-                `Ошибка при получении категорий - ${error.response?.data}`
+                `🤬 Ошибка при получении категорий - ${error.response?.data}`
             )
-            throw new UnauthorizedException(error.response?.data?.text)
+            throw new UnauthorizedException(
+                error.response?.data?.text ||
+                    'Технические проблемы, попробуйте позже'
+            )
         }
     }
 
@@ -81,22 +87,21 @@ export class PanelService {
                         `${this.ONE_C_URL}/${listSaleUrl}/${userId}/${query.page}/${query.count}/${query.title}`
                     )
                 )
-
                 const applicationsAndSales: ApplicationSaleDto = response.data
                 return applicationsAndSales
             }
         } catch (error) {
             console.log(
-                `Ошибка при получении заявок или продаж - ${error.response?.data}`
+                `🤬 Ошибка при получении заявок или продаж - ${error.response?.data}`
             )
-            throw new UnauthorizedException(error.response?.data?.text)
+            throw new UnauthorizedException(
+                error.response?.data?.text ||
+                    'Технические проблемы, попробуйте позже'
+            )
         }
     }
 
-    async moveApplicationSale(
-        userId: string,
-        body: MoveApplicationSaleDto
-    ): Promise<any> {
+    async moveApplicationSale(userId: string, body: MoveApplicationSaleDto) {
         const moveApplicationUrl = `${this.ONE_C_URL}/edit-application`
         const moveSaleUrl = `${this.ONE_C_URL}/edit-sale`
         try {
@@ -121,12 +126,15 @@ export class PanelService {
             return applicationsAndSales
         } catch (error) {
             console.log(
-                `Ошибка при получении перемещении зявки или продажи - ${error.response?.data}`
+                `🤬 Ошибка при получении перемещении зявки или продажи - ${error.response?.data}`
             )
-            throw new UnauthorizedException(error.response?.data?.text)
+            throw new UnauthorizedException(
+                error.response?.data?.text ||
+                    'Технические проблемы, попробуйте позже'
+            )
         }
     }
-    async createSale(body: CreateSaleDto): Promise<any> {
+    async createSale(body: CreateSaleDto) {
         const createSaleUrl = 'create-sale'
 
         try {
@@ -140,12 +148,17 @@ export class PanelService {
             const sale: ApplicationSaleDto = response.data
             return sale
         } catch (error) {
-            console.log(`Ошибка при создании продажи - ${error.response?.data}`)
-            throw new UnauthorizedException(error.response?.data)
+            console.log(
+                `🤬 Ошибка при создании продажи - ${error.response?.data}`
+            )
+            throw new UnauthorizedException(
+                error.response?.data?.text ||
+                    'Технические проблемы, попробуйте позже'
+            )
         }
     }
 
-    async getOrgsBills(): Promise<any> {
+    async getOrgsBills() {
         const orgsUrl = 'list-organizations'
         const billsUrl = 'list-bills'
 
@@ -161,13 +174,16 @@ export class PanelService {
             return { orgs, bills }
         } catch (error) {
             console.log(
-                `Ошибка при получении Организаций и Счетов - ${error.response?.data}`
+                `🤬 Ошибка при получении Организаций и Счетов - ${error.response?.data}`
             )
-            throw new UnauthorizedException(error.response?.data?.text)
+            throw new UnauthorizedException(
+                error.response?.data?.text ||
+                    'Технические проблемы, попробуйте позже'
+            )
         }
     }
 
-    async getCancels(userId: string, query: any): Promise<any> {
+    async getCancels(userId: string, query: any) {
         const orgsUrl = `get-cancels/${userId}/${query.page}/${query.count}`
 
         try {
@@ -178,12 +194,15 @@ export class PanelService {
             return failures
         } catch (error) {
             console.log(
-                `Ошибка при получении отклонённых заявок - ${error.response?.data}`
+                `🤬 Ошибка при получении отклонённых заявок - ${error.response?.data}`
             )
-            throw new UnauthorizedException(error.response?.data?.text)
+            throw new UnauthorizedException(
+                error.response?.data?.text ||
+                    'Технические проблемы, попробуйте позже'
+            )
         }
     }
-    async getReturns(userId: string, query: any): Promise<any> {
+    async getReturns(userId: string, query: any) {
         const orgsUrl = `list-returns/${userId}/${query.page}/${query.count}`
 
         try {
@@ -194,12 +213,15 @@ export class PanelService {
             return failures
         } catch (error) {
             console.log(
-                `Ошибка при получении возвратных заявок - ${error.response?.data}`
+                `🤬 Ошибка при получении возвратных заявок - ${error.response?.data}`
             )
-            throw new UnauthorizedException(error.response?.data?.text)
+            throw new UnauthorizedException(
+                error.response?.data?.text ||
+                    'Технические проблемы, попробуйте позже'
+            )
         }
     }
-    async getMissedCalls(userId: string, query: any): Promise<any> {
+    async getMissedCalls(userId: string, query: any) {
         const orgsUrl = `list-returns/${userId}/${query.page}/${query.count}`
 
         try {
@@ -210,16 +232,16 @@ export class PanelService {
             return failures
         } catch (error) {
             console.log(
-                `Ошибка при получении пропущенных звонков - ${error.response?.data}`
+                `🤬 Ошибка при получении пропущенных звонков - ${error.response?.data}`
             )
-            throw new UnauthorizedException(error.response?.data?.text)
+            throw new UnauthorizedException(
+                error.response?.data?.text ||
+                    'Технические проблемы, попробуйте позже'
+            )
         }
     }
 
-    async refusalApplication(
-        userId: string,
-        body: ReqRefusalDto
-    ): Promise<any> {
+    async refusalApplication(userId: string, body: ReqRefusalDto) {
         const refusalUrl = `cancel-application`
 
         try {
@@ -233,9 +255,12 @@ export class PanelService {
             return refusal
         } catch (error) {
             console.log(
-                `Ошибка при получении отклонённых заявок - ${error.response?.data}`
+                `🤬 Ошибка при получении отклонённых заявок - ${error.response?.data}`
             )
-            throw new UnauthorizedException(error.response?.data?.text)
+            throw new UnauthorizedException(
+                error.response?.data?.text ||
+                    'Технические проблемы, попробуйте позже'
+            )
         }
     }
 }

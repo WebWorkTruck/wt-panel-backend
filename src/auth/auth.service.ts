@@ -37,13 +37,15 @@ export class AuthService {
                 work_phone: user.work_phone,
                 roles: user.roles,
             })
-
             return { accessToken }
         } catch (error) {
             console.log(
-                `Ошибка при авторизации при помощи 1С - ${error.response?.data}`
+                `🤬 Ошибка при авторизации при помощи 1С - ${error.response?.data}`
             )
-            throw new UnauthorizedException(error.response?.data?.text)
+            throw new UnauthorizedException(
+                error.response?.data?.text ||
+                    'Технические проблемы, попробуйте позже'
+            )
         }
     }
 }

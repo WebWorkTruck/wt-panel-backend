@@ -43,6 +43,9 @@ class DataDto {
 
     @ApiProperty()
     flag: number
+
+    @ApiProperty()
+    tk: string
 }
 
 class InfoDto {

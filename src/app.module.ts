@@ -9,6 +9,7 @@ import { ApplicationsModule } from './applications/applications.module'
 import { SalesModule } from './sales/sales.module'
 import { CacheModule } from '@nestjs/cache-manager'
 import { ConfigModule } from '@nestjs/config'
+import { ImagesModule } from './images/images.module'
 
 @Module({
     imports: [
@@ -22,6 +23,7 @@ import { ConfigModule } from '@nestjs/config'
         ConfigModule.forRoot({
             envFilePath: '.env',
         }),
+        ImagesModule,
     ],
     controllers: [AppController],
     providers: [AppService],

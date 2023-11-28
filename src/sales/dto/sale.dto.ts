@@ -79,6 +79,9 @@ class SaleInfo {
 
     @ApiProperty()
     sub_processing: string
+
+    @ApiProperty()
+    recorded_track_number: boolean
 }
 
 export class SaleResponseDto {
@@ -87,4 +90,11 @@ export class SaleResponseDto {
 
     @ApiProperty({ type: [SaleDto] })
     data: SaleDto[]
+}
+export class SaleAddTrackNumberReq {
+    @ApiProperty()
+    saleId: string
+
+    @ApiProperty()
+    trackNumber: string
 }

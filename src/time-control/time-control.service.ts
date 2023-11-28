@@ -47,9 +47,12 @@ export class TimeControlService {
             return base64Image
         } catch (error) {
             console.log(
-                `Ошибка при получении аватара пользователя - ${error.response?.data}`
+                `🤬 Ошибка при получении аватара пользователя (TimeControl) - ${error.response?.data}`
             )
-            throw new UnauthorizedException(error.response?.data?.text)
+            throw new UnauthorizedException(
+                error.response?.data?.text ||
+                    'Технические проблемы, попробуйте позже'
+            )
         }
     }
     async getInfoUser(userId: string): Promise<any> {
@@ -72,9 +75,12 @@ export class TimeControlService {
             return userData.data[0].UID
         } catch (error) {
             console.log(
-                `Ошибка при получении информации о пользователе (TimeControl) - ${error.response?.data}`
+                `🤬 Ошибка при получении информации о пользователе (TimeControl) - ${error.response?.data}`
             )
-            throw new UnauthorizedException(error.response?.data?.text)
+            throw new UnauthorizedException(
+                error.response?.data?.text ||
+                    'Технические проблемы, попробуйте позже'
+            )
         }
     }
 
@@ -134,9 +140,12 @@ export class TimeControlService {
             return result
         } catch (error) {
             console.log(
-                `Ошибка при получении времени работы пользователя (TimeControl) - ${error.response?.data}`
+                `🤬 Ошибка при получении времени работы пользователя (TimeControl) - ${error.response?.data}`
             )
-            throw new UnauthorizedException(error.response?.data?.text)
+            throw new UnauthorizedException(
+                error.response?.data?.text ||
+                    'Технические проблемы, попробуйте позже'
+            )
         }
     }
 }
