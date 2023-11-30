@@ -40,7 +40,7 @@ export class AuthService {
             return { accessToken }
         } catch (error) {
             console.log(
-                `🤬 Ошибка при авторизации при помощи 1С - ${error.response?.data}`
+                `🤬🤬🤬 Ошибка при авторизации при помощи 1С - ${error.response?.data.text}`
             )
             throw new UnauthorizedException(
                 error.response?.data?.text ||

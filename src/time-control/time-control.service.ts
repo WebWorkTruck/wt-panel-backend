@@ -3,6 +3,7 @@ import { CACHE_MANAGER } from '@nestjs/cache-manager'
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common'
 import { firstValueFrom } from 'rxjs'
 import { Cache } from 'cache-manager'
+import * as sharp from 'sharp'
 
 @Injectable()
 export class TimeControlService {
@@ -40,14 +41,19 @@ export class TimeControlService {
 
             const avatarData: Buffer = Buffer.from(response.data)
 
-            const base64Image = avatarData.toString('base64')
+            // Сжатие изображения
+            const compressedAvatarData = await sharp(avatarData)
+                .webp({ quality: 20 })
+                .toBuffer()
+
+            const base64Image = compressedAvatarData.toString('base64')
 
             await this.cacheManager.set(userId, base64Image, 31536000)
 
             return base64Image
         } catch (error) {
             console.log(
-                `🤬 Ошибка при получении аватара пользователя (TimeControl) - ${error.response?.data}`
+                `🤬🤬🤬 Ошибка при получении аватара пользователя (TimeControl) - ${error.response.data.error}`
             )
             throw new UnauthorizedException(
                 error.response?.data?.text ||
@@ -55,7 +61,7 @@ export class TimeControlService {
             )
         }
     }
-    async getInfoUser(userId: string): Promise<any> {
+    async getInfoUser(userId: string) {
         const url = `persons?tabnum=${userId}`
 
         const headers = {
@@ -75,7 +81,7 @@ export class TimeControlService {
             return userData.data[0].UID
         } catch (error) {
             console.log(
-                `🤬 Ошибка при получении информации о пользователе (TimeControl) - ${error.response?.data}`
+                `🤬🤬🤬 Ошибка при получении информации о пользователе (TimeControl) - ${error.response.data.error}`
             )
             throw new UnauthorizedException(
                 error.response?.data?.text ||
@@ -84,8 +90,8 @@ export class TimeControlService {
         }
     }
 
-    async getTimeWorkUser(userId: string) {
-        const url = `time/works?startdate=01.09.2023&enddate=30.09.2023&person_list=${userId}`
+    async getTimeWorkUser(userId: string, startDate: string, endDate: string) {
+        const url = `time/works?startdate=${startDate}&enddate=${endDate}&person_list=${userId}`
 
         const headers = {
             'Content-Type': 'application/json',
@@ -140,7 +146,7 @@ export class TimeControlService {
             return result
         } catch (error) {
             console.log(
-                `🤬 Ошибка при получении времени работы пользователя (TimeControl) - ${error.response?.data}`
+                `🤬🤬🤬 Ошибка при получении времени работы пользователя (TimeControl) - ${error.response.data.error}`
             )
             throw new UnauthorizedException(
                 error.response?.data?.text ||

@@ -17,7 +17,7 @@ export class SalesService {
             return sale
         } catch (error) {
             console.log(
-                `🤬 Ошибка при получении одной продажи - ${error.response?.data}`
+                `🤬🤬🤬 Ошибка при получении одной продажи - ${error.response?.data}`
             )
             throw new UnauthorizedException(
                 error.response?.data?.text ||
@@ -45,7 +45,7 @@ export class SalesService {
             return sale
         } catch (error) {
             console.log(
-                `🤬 Ошибка при добавлении трек номер к продаже - ${error.response?.data}`
+                `🤬🤬🤬 Ошибка при добавлении трек номер к продаже - ${error.response?.data}`
             )
             throw new UnauthorizedException(
                 error.response?.data?.text ||

@@ -25,7 +25,7 @@ export class ProductsService {
             return products
         } catch (error) {
             console.log(
-                `🤬 Ошибка при получении продуктов - ${error.response?.data}`
+                `🤬🤬🤬 Ошибка при получении продуктов - ${error.response?.data}`
             )
             throw new UnauthorizedException(
                 error.response?.data?.text ||
@@ -42,7 +42,7 @@ export class ProductsService {
             return product.data[0]
         } catch (error) {
             console.log(
-                `🤬 Ошибка при получении одного продукта - ${error.response?.data}`
+                `🤬🤬🤬 Ошибка при получении одного продукта - ${error.response?.data}`
             )
             throw new UnauthorizedException(
                 error.response?.data?.text ||
@@ -81,7 +81,7 @@ export class ProductsService {
             }
         } catch (error) {
             console.log(
-                `🤬 Ошибка при получении похожих товаров - ${error.response?.data}`
+                `🤬🤬🤬 Ошибка при получении похожих товаров - ${error.response?.data}`
             )
             throw new UnauthorizedException(
                 error.response?.data?.text ||
@@ -101,7 +101,9 @@ export class ProductsService {
 
             return response.data
         } catch (error) {
-            console.log(`🤬 Ошибка при выдаче товара - ${error.response?.data}`)
+            console.log(
+                `🤬🤬🤬 Ошибка при выдаче товара - ${error.response?.data}`
+            )
             throw new UnauthorizedException(
                 error.response?.data?.text ||
                     'Технические проблемы, попробуйте позже'
@@ -121,7 +123,7 @@ export class ProductsService {
             return response.data
         } catch (error) {
             console.log(
-                `🤬 Ошибка при смене товара в продаже или заявке - ${error.response?.data}`
+                `🤬🤬🤬 Ошибка при смене товара в продаже или заявке - ${error.response?.data}`
             )
             throw new UnauthorizedException(
                 error.response?.data?.text ||
