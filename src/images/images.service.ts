@@ -33,25 +33,38 @@ export class ImagesService {
     async addImages(productId: string, files: Express.Multer.File[]) {
         const url = `${this.IMAGE_SERVICE_URL}/v1/images/${productId}`
 
-        try {
-            const formData = new FormData()
+        const formData = new FormData()
 
-            for (const file of files) {
-                const compressedBuffer = await this.compressImage(file.buffer)
-
-                const blob = new Blob([compressedBuffer], {
-                    type: file.mimetype,
-                })
-
-                formData.append(`file${file.size}`, blob)
+        for (const file of files) {
+            const isImage = file.mimetype.startsWith('image/')
+            if (!isImage) {
+                throw new UnauthorizedException(
+                    `Файл ${file.originalname} не являеться фотографией.`
+                )
             }
+            const compressedBuffer = await this.compressImage(file.buffer)
 
+            const blob = new Blob([compressedBuffer], {
+                type: file.mimetype,
+            })
+
+            formData.append(`file${file.size}`, blob)
+        }
+        try {
             const response = await firstValueFrom(
                 this.httpService.post(url, formData)
             )
             return response.data
         } catch (error) {
-            throw new UnauthorizedException(error.response?.data?.text)
+            const currentDate = new Date()
+            const formattedDate = `${currentDate.getDate()}.${
+                currentDate.getMonth() + 1
+            }.${currentDate.getFullYear()} ${currentDate.getHours()}:${currentDate.getMinutes()}`
+
+            console.error(
+                `⛔ Ошибка при добавлении фотографий ${formattedDate}:`,
+                error.response.data
+            )
         }
     }
 
@@ -60,6 +73,7 @@ export class ImagesService {
             const url = `${
                 this.IMAGE_SERVICE_URL
             }/v1/images/${productId}/${image.split('/').pop()}`
+
             try {
                 const response = await firstValueFrom(
                     this.httpService.delete(url)
