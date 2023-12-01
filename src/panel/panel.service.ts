@@ -143,6 +143,7 @@ export class PanelService {
                     id: body.id,
                     org: body.org,
                     bill: body.bill,
+                    date: body.date.replace(/-/g, ''),
                 })
             )
             const sale: ApplicationSaleDto = response.data

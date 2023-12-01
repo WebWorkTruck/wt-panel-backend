@@ -126,6 +126,9 @@ export class CreateSaleDto {
 
     @ApiProperty()
     bill: string
+
+    @ApiProperty()
+    date: string
 }
 export class ReqRefusalDto {
     @ApiProperty()

@@ -6,6 +6,10 @@ export class QueryRequestDto {
     @IsOptional()
     q?: string
 
+    @ApiProperty({ required: false })
+    @IsOptional()
+    addPart?: string
+
     @ApiProperty()
     page: string
     @ApiProperty()

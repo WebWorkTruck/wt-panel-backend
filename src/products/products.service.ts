@@ -54,9 +54,20 @@ export class ProductsService {
     async getSimilarProducts(
         query: QueryRequestDto
     ): Promise<ProductsResponse> {
-        const url = `${this.ONE_C_URL}/list-products/${
-            query.q.split('_')[0] + '_'
-        }/${query.page}/${query.count}`
+        let url: string
+        const queryForSearch: string = query.q.split('_')[0] + '_'
+
+        if (query.addPart.length === 0) {
+            url = `${this.ONE_C_URL}/list-products/${queryForSearch}/${query.page}/${query.count}`
+        } else {
+            if (queryForSearch === query.addPart.split('_')[0] + '_') {
+                url = `${this.ONE_C_URL}/list-products/${query.addPart}/${query.page}/${query.count}`
+            } else {
+                throw new UnauthorizedException(
+                    'Товар не принадлежит данной карточке'
+                )
+            }
+        }
 
         try {
             const response = await firstValueFrom(this.httpService.get(url))
