@@ -57,7 +57,7 @@ export class ProductsService {
         let url: string
         const queryForSearch: string = query.q.split('_')[0] + '_'
 
-        if (query.addPart.length === 0) {
+        if (!query.addPart) {
             url = `${this.ONE_C_URL}/list-products/${queryForSearch}/${query.page}/${query.count}`
         } else {
             if (queryForSearch === query.addPart.split('_')[0] + '_') {
