@@ -1,19 +1,22 @@
 import { HttpService } from '@nestjs/axios'
-import { Injectable, UnauthorizedException } from '@nestjs/common'
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common'
 import { firstValueFrom } from 'rxjs'
 import { ProductDto, ProductsResponse } from './dto/product.dto'
 import { QueryRequestDto } from './dto/search.dto'
+import { CACHE_MANAGER } from '@nestjs/cache-manager'
+import { Cache } from 'cache-manager'
 
 @Injectable()
 export class ProductsService {
-    constructor(private readonly httpService: HttpService) {}
+    constructor(
+        private readonly httpService: HttpService,
+        @Inject(CACHE_MANAGER) private readonly cacheManager: Cache
+    ) {}
     private ONE_C_URL = process.env.URL_ONE_C
 
-    async getProducts(
-        q: string,
-        page: string,
-        count: string
-    ): Promise<ProductsResponse> {
+    async getProducts(q: string, page: string, count: string) {
+        const products = await this.cacheManager.get(`products ${q}`)
+        if (products) return products
         let url: string
 
         if (!q) url = `${this.ONE_C_URL}/list-products/ /${page}/${count}`
@@ -22,10 +25,15 @@ export class ProductsService {
         try {
             const response = await firstValueFrom(this.httpService.get(url))
             const products: ProductsResponse = response.data
+            await this.cacheManager.set(
+                `products ${q}`,
+                products,
+                1000 * 60 * 5
+            )
             return products
         } catch (error) {
             console.log(
-                `🤬🤬🤬 Ошибка при получении продуктов - ${error.response?.data}`
+                `🆘🆘🆘 Ошибка при получении продуктов - ${error.response?.data}`
             )
             throw new UnauthorizedException(
                 error.response?.data?.text ||
@@ -33,6 +41,7 @@ export class ProductsService {
             )
         }
     }
+
     async getProduct(id: string): Promise<ProductDto> {
         const url = `${this.ONE_C_URL}/product/${id}`
 
@@ -42,7 +51,7 @@ export class ProductsService {
             return product.data[0]
         } catch (error) {
             console.log(
-                `🤬🤬🤬 Ошибка при получении одного продукта - ${error.response?.data}`
+                `🆘🆘🆘 Ошибка при получении одного продукта - ${error.response?.data}`
             )
             throw new UnauthorizedException(
                 error.response?.data?.text ||
@@ -92,7 +101,7 @@ export class ProductsService {
             }
         } catch (error) {
             console.log(
-                `🤬🤬🤬 Ошибка при получении похожих товаров - ${error.response?.data}`
+                `🆘🆘🆘 Ошибка при получении похожих товаров - ${error.response?.data}`
             )
             throw new UnauthorizedException(
                 error.response?.data?.text ||
@@ -113,7 +122,7 @@ export class ProductsService {
             return response.data
         } catch (error) {
             console.log(
-                `🤬🤬🤬 Ошибка при выдаче товара - ${error.response?.data}`
+                `🆘🆘🆘 Ошибка при выдаче товара - ${error.response?.data}`
             )
             throw new UnauthorizedException(
                 error.response?.data?.text ||
@@ -134,7 +143,7 @@ export class ProductsService {
             return response.data
         } catch (error) {
             console.log(
-                `🤬🤬🤬 Ошибка при смене товара в продаже или заявке - ${error.response?.data}`
+                `🆘🆘🆘 Ошибка при смене товара в продаже или заявке - ${error.response?.data}`
             )
             throw new UnauthorizedException(
                 error.response?.data?.text ||

@@ -41,19 +41,18 @@ export class TimeControlService {
 
             const avatarData: Buffer = Buffer.from(response.data)
 
-            // Сжатие изображения
             const compressedAvatarData = await sharp(avatarData)
                 .webp({ quality: 20 })
                 .toBuffer()
 
             const base64Image = compressedAvatarData.toString('base64')
 
-            await this.cacheManager.set(userId, base64Image, 31536000)
+            await this.cacheManager.set(userId, base64Image, 0)
 
             return base64Image
         } catch (error) {
             console.log(
-                `🤬🤬🤬 Ошибка при получении аватара пользователя (TimeControl) - ${error.response.data.error}`
+                `🆘🆘🆘 Ошибка при получении аватара пользователя (TimeControl) - ${error.response.data.error}`
             )
             throw new UnauthorizedException(
                 error.response?.data?.text ||
@@ -81,7 +80,7 @@ export class TimeControlService {
             return userData.data[0].UID
         } catch (error) {
             console.log(
-                `🤬🤬🤬 Ошибка при получении информации о пользователе (TimeControl) - ${error.response?.data?.error}`
+                `🆘🆘🆘 Ошибка при получении информации о пользователе (TimeControl) - ${error.response?.data?.error}`
             )
             throw new UnauthorizedException(
                 error.response?.data?.text ||
@@ -146,7 +145,7 @@ export class TimeControlService {
             return result
         } catch (error) {
             console.log(
-                `🤬🤬🤬 Ошибка при получении времени работы пользователя (TimeControl) - ${error.response.data.error}`
+                `🆘🆘🆘 Ошибка при получении времени работы пользователя (TimeControl) - ${error.response.data.error}`
             )
             throw new UnauthorizedException(
                 error.response?.data?.text ||

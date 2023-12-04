@@ -2,6 +2,7 @@ import { Body, Controller, Get, Param, Post } from '@nestjs/common'
 import { SalesService } from './sales.service'
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { SaleAddTrackNumberReq, SaleResponseDto } from './dto/sale.dto'
+import { CreateSaleDto } from './dto/create-sale.dto'
 
 @ApiTags('sales')
 @Controller('sales')
@@ -23,5 +24,13 @@ export class SalesController {
     })
     addTrackNumber(@Body() body: SaleAddTrackNumberReq) {
         return this.salesService.addTrackNumber(body)
+    }
+    @Post('create-sale')
+    @ApiOkResponse()
+    @ApiOperation({
+        summary: 'Создание продажи',
+    })
+    createSale(@Body() body: CreateSaleDto) {
+        return this.salesService.createSale(body)
     }
 }

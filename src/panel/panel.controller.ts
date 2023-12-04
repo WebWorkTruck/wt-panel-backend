@@ -8,7 +8,6 @@ import { SessionInfoDto } from 'src/auth/dto/session.dto'
 import { AuthGuard } from 'src/auth/auth.guard'
 import {
     ApplicationSaleDto,
-    CreateSaleDto,
     MoveApplicationSaleDto,
     ReqApplicationSaleDto,
     ReqFailuresDto,
@@ -74,15 +73,6 @@ export class PanelController {
         @Body() body: MoveApplicationSaleDto
     ) {
         return this.panelService.moveApplicationSale(session.id, body)
-    }
-
-    @Post('create-sale')
-    @ApiOkResponse()
-    @ApiOperation({
-        summary: 'Создание продажи',
-    })
-    createSale(@Body() body: CreateSaleDto) {
-        return this.panelService.createSale(body)
     }
 
     @Get('organizations-bills')

@@ -5,7 +5,6 @@ import { BadApplication } from './dto/bad-application.dto'
 import { Category } from './dto/category.dto'
 import {
     ApplicationSaleDto,
-    CreateSaleDto,
     MoveApplicationSaleDto,
     ReqApplicationSaleDto,
     ReqRefusalDto,
@@ -28,7 +27,7 @@ export class PanelService {
             return applications
         } catch (error) {
             console.log(
-                `🤬🤬🤬 Ошибка при получении bad-applications - ${error.response?.data}`
+                `🆘🆘🆘 Ошибка при получении bad-applications - ${error.response?.data}`
             )
             throw new UnauthorizedException(
                 error.response?.data?.text ||
@@ -44,7 +43,7 @@ export class PanelService {
             return categories
         } catch (error) {
             console.log(
-                `🤬🤬🤬 Ошибка при получении категорий - ${error.response?.data}`
+                `🆘🆘🆘 Ошибка при получении категорий - ${error.response?.data}`
             )
             throw new UnauthorizedException(
                 error.response?.data?.text ||
@@ -92,7 +91,7 @@ export class PanelService {
             }
         } catch (error) {
             console.log(
-                `🤬🤬🤬 Ошибка при получении заявок или продаж - ${error.response?.data}`
+                `🆘🆘🆘 Ошибка при получении заявок или продаж - ${error.response?.data}`
             )
             throw new UnauthorizedException(
                 error.response?.data?.text ||
@@ -126,31 +125,7 @@ export class PanelService {
             return applicationsAndSales
         } catch (error) {
             console.log(
-                `🤬🤬🤬 Ошибка при получении перемещении зявки или продажи - ${error.response?.data}`
-            )
-            throw new UnauthorizedException(
-                error.response?.data?.text ||
-                    'Технические проблемы, попробуйте позже'
-            )
-        }
-    }
-    async createSale(body: CreateSaleDto) {
-        const createSaleUrl = 'create-sale'
-
-        try {
-            const response = await firstValueFrom(
-                this.httpService.post(`${this.ONE_C_URL}/${createSaleUrl}`, {
-                    id: body.id,
-                    org: body.org,
-                    bill: body.bill,
-                    date: body.date.replace(/-/g, ''),
-                })
-            )
-            const sale: ApplicationSaleDto = response.data
-            return sale
-        } catch (error) {
-            console.log(
-                `🤬🤬🤬 Ошибка при создании продажи - ${error.response?.data}`
+                `🆘🆘🆘 Ошибка при получении перемещении зявки или продажи - ${error.response?.data}`
             )
             throw new UnauthorizedException(
                 error.response?.data?.text ||
@@ -175,7 +150,7 @@ export class PanelService {
             return { orgs, bills }
         } catch (error) {
             console.log(
-                `🤬🤬🤬 Ошибка при получении Организаций и Счетов - ${error.response?.data}`
+                `🆘🆘🆘 Ошибка при получении Организаций и Счетов - ${error.response?.data}`
             )
             throw new UnauthorizedException(
                 error.response?.data?.text ||
@@ -195,7 +170,7 @@ export class PanelService {
             return failures
         } catch (error) {
             console.log(
-                `🤬🤬🤬 Ошибка при получении отклонённых заявок - ${error.response?.data}`
+                `🆘🆘🆘 Ошибка при получении отклонённых заявок - ${error.response?.data}`
             )
             throw new UnauthorizedException(
                 error.response?.data?.text ||
@@ -214,7 +189,7 @@ export class PanelService {
             return failures
         } catch (error) {
             console.log(
-                `🤬🤬🤬 Ошибка при получении возвратных заявок - ${error.response?.data}`
+                `🆘🆘🆘 Ошибка при получении возвратных заявок - ${error.response?.data}`
             )
             throw new UnauthorizedException(
                 error.response?.data?.text ||
@@ -233,7 +208,7 @@ export class PanelService {
             return failures
         } catch (error) {
             console.log(
-                `🤬🤬🤬 Ошибка при получении пропущенных звонков - ${error.response?.data}`
+                `🆘🆘🆘 Ошибка при получении пропущенных звонков - ${error.response?.data}`
             )
             throw new UnauthorizedException(
                 error.response?.data?.text ||
@@ -256,7 +231,7 @@ export class PanelService {
             return refusal
         } catch (error) {
             console.log(
-                `🤬🤬🤬 Ошибка при получении отклонённых заявок - ${error.response?.data}`
+                `🆘🆘🆘 Ошибка при получении отклонённых заявок - ${error.response?.data}`
             )
             throw new UnauthorizedException(
                 error.response?.data?.text ||

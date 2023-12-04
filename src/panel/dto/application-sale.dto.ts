@@ -117,19 +117,7 @@ export class MoveApplicationSaleDto {
     @ApiProperty()
     move_myself: boolean
 }
-export class CreateSaleDto {
-    @ApiProperty()
-    id: string
 
-    @ApiProperty()
-    org: string
-
-    @ApiProperty()
-    bill: string
-
-    @ApiProperty()
-    date: string
-}
 export class ReqRefusalDto {
     @ApiProperty()
     id: string

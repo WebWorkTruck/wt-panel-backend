@@ -1,11 +1,15 @@
 import { HttpService } from '@nestjs/axios'
-import { Injectable, UnauthorizedException } from '@nestjs/common'
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common'
 import { firstValueFrom } from 'rxjs'
 import * as sharp from 'sharp'
-
+import { CACHE_MANAGER } from '@nestjs/cache-manager'
+import { Cache } from 'cache-manager'
 @Injectable()
 export class ImagesService {
-    constructor(private readonly httpService: HttpService) {}
+    constructor(
+        private readonly httpService: HttpService,
+        @Inject(CACHE_MANAGER) private readonly cacheManager: Cache
+    ) {}
 
     private IMAGE_SERVICE_URL = process.env.IMAGE_SERVICE_URL
 
@@ -54,6 +58,12 @@ export class ImagesService {
             const response = await firstValueFrom(
                 this.httpService.post(url, formData)
             )
+            const keys = await this.cacheManager.store.keys()
+            const productKeys = keys.filter(key => key.startsWith('products'))
+            productKeys.forEach(async key => {
+                await this.cacheManager.del(key)
+            })
+
             return response.data
         } catch (error) {
             const currentDate = new Date()
@@ -78,6 +88,13 @@ export class ImagesService {
                 const response = await firstValueFrom(
                     this.httpService.delete(url)
                 )
+                const keys = await this.cacheManager.store.keys()
+                const productKeys = keys.filter(key =>
+                    key.startsWith('products')
+                )
+                productKeys.forEach(async key => {
+                    await this.cacheManager.del(key)
+                })
                 return response.data
             } catch (error) {
                 const currentDate = new Date()

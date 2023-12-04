@@ -17,8 +17,8 @@ export class ImagesController {
     constructor(private readonly imagesService: ImagesService) {}
 
     @Post()
-    @UseInterceptors(FilesInterceptor('files', 10)) // '10' - максимальное количество файлов
-    @ApiConsumes('multipart/form-data') // Указывает, что запрос использует форму для передачи данных
+    @UseInterceptors(FilesInterceptor('files', 10))
+    @ApiConsumes('multipart/form-data')
     @ApiBody({
         schema: {
             type: 'object',

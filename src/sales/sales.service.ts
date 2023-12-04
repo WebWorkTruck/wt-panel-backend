@@ -2,6 +2,7 @@ import { HttpService } from '@nestjs/axios'
 import { Injectable, UnauthorizedException } from '@nestjs/common'
 import { firstValueFrom } from 'rxjs'
 import { SaleAddTrackNumberReq, SaleResponseDto } from './dto/sale.dto'
+import { CreateSaleDto } from './dto/create-sale.dto'
 
 @Injectable()
 export class SalesService {
@@ -17,7 +18,7 @@ export class SalesService {
             return sale
         } catch (error) {
             console.log(
-                `🤬🤬🤬 Ошибка при получении одной продажи - ${error.response?.data}`
+                `🆘🆘🆘 Ошибка при получении одной продажи - ${error.response?.data}`
             )
             throw new UnauthorizedException(
                 error.response?.data?.text ||
@@ -45,7 +46,31 @@ export class SalesService {
             return sale
         } catch (error) {
             console.log(
-                `🤬🤬🤬 Ошибка при добавлении трек номер к продаже - ${error.response?.data}`
+                `🆘🆘🆘 Ошибка при добавлении трек номер к продаже - ${error.response?.data}`
+            )
+            throw new UnauthorizedException(
+                error.response?.data?.text ||
+                    'Технические проблемы, попробуйте позже'
+            )
+        }
+    }
+    async createSale(body: CreateSaleDto) {
+        const createSaleUrl = 'create-sale'
+
+        try {
+            const response = await firstValueFrom(
+                this.httpService.post(`${this.ONE_C_URL}/${createSaleUrl}`, {
+                    id: body.id,
+                    org: body.org,
+                    bill: body.bill,
+                    date: body.date.replace(/-/g, ''),
+                })
+            )
+            const sale: string = response.data
+            return sale
+        } catch (error) {
+            console.log(
+                `🆘🆘🆘 Ошибка при создании продажи - ${error.response?.data}`
             )
             throw new UnauthorizedException(
                 error.response?.data?.text ||

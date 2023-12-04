@@ -18,7 +18,7 @@ export class ApplicationsService {
             return application
         } catch (error) {
             console.log(
-                `🤬🤬🤬 Ошибка при получении заявки - ${error.response?.data}`
+                `🆘🆘🆘 Ошибка при получении заявки - ${error.response?.data}`
             )
             throw new UnauthorizedException(error.response?.data?.text)
         }
