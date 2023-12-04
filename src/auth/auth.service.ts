@@ -14,7 +14,7 @@ export class AuthService {
 
     private ONE_C_URL = process.env.URL_ONE_C
 
-    async signInOneC(phone: string, password: string): Promise<any> {
+    async signInOneC(phone: string, password: string) {
         const url = `${this.ONE_C_URL}/sign-in`
         const data = {
             phone,
