@@ -79,6 +79,8 @@ export class TimeControlService {
 
             return userData.data[0].UID
         } catch (error) {
+            console.log(error)
+
             console.log(
                 `🆘🆘🆘 Ошибка при получении информации о пользователе (TimeControl) - ${error.response?.data?.error}`
             )
