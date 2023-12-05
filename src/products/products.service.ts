@@ -15,7 +15,9 @@ export class ProductsService {
     private ONE_C_URL = process.env.URL_ONE_C
 
     async getProducts(q: string, page: string, count: string) {
-        const products = await this.cacheManager.get(`products ${q}`)
+        const products = await this.cacheManager.get(
+            `products ${q} ${page} ${count}`
+        )
         if (products) return products
         let url: string
 
@@ -26,7 +28,7 @@ export class ProductsService {
             const response = await firstValueFrom(this.httpService.get(url))
             const products: ProductsResponse = response.data
             await this.cacheManager.set(
-                `products ${q}`,
+                `products ${q} ${page} ${count}`,
                 products,
                 1000 * 60 * 5
             )
