@@ -15,12 +15,27 @@ export class ImagesService {
 
     async compressImage(buffer: Buffer) {
         try {
+            // Получите размер исходного буфера в мегабайтах
+            const originalSizeMB = (buffer.length / (1024 * 1024)).toFixed(2)
+
             const compressedBuffer = await sharp(buffer)
                 .resize({ width: 1920, height: 1080 })
                 .toBuffer()
 
+            // Получите размер сжатого буфера в мегабайтах
+            const compressedSizeMB = (
+                compressedBuffer.length /
+                (1024 * 1024)
+            ).toFixed(2)
+
+            // Выведите информацию о размерах в мегабайтах
+            console.log(
+                `Original Size: ${originalSizeMB} MB, Compressed Size: ${compressedSizeMB} MB`
+            )
+
             return compressedBuffer
         } catch (error) {
+            // Обработка ошибки
             const currentDate = new Date()
             const formattedDate = `${currentDate.getDate()}.${
                 currentDate.getMonth() + 1
@@ -34,6 +49,7 @@ export class ImagesService {
             throw new Error('Failed to compress image')
         }
     }
+
     async addImages(productId: string, files: Express.Multer.File[]) {
         const url = `${this.IMAGE_SERVICE_URL}/v1/images/${productId}`
 

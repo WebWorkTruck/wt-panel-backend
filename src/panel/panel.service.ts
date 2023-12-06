@@ -103,6 +103,12 @@ export class PanelService {
     async moveApplicationSale(userId: string, body: MoveApplicationSaleDto) {
         const moveApplicationUrl = `${this.ONE_C_URL}/edit-application`
         const moveSaleUrl = `${this.ONE_C_URL}/edit-sale`
+        let title_for_commen: string
+
+        if (body.comment_for_collector.length > 0) {
+            title_for_commen = 'Комметарий во время сборки'
+        }
+
         try {
             const response = await firstValueFrom(
                 this.httpService.post(
@@ -118,6 +124,8 @@ export class PanelService {
                         person: body.move_myself ? userId : '0',
                         processing: body.processing,
                         sub_processing: body.sub_processing,
+                        description:
+                            title_for_commen + body.comment_for_collector,
                     }
                 )
             )
@@ -225,6 +233,7 @@ export class PanelService {
                 this.httpService.post(`${this.ONE_C_URL}/${refusalUrl}`, {
                     id: body.id,
                     person: userId,
+                    description: body.reason,
                 })
             )
             const refusal: any = response.data

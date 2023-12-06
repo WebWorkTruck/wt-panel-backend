@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
+import { IsOptional } from 'class-validator'
 
 class ResponsibleDto {
     @ApiProperty()
@@ -116,9 +117,15 @@ export class MoveApplicationSaleDto {
 
     @ApiProperty()
     move_myself: boolean
+
+    @ApiProperty()
+    comment_for_collector: string
 }
 
 export class ReqRefusalDto {
     @ApiProperty()
     id: string
+
+    @ApiProperty()
+    reason: string
 }

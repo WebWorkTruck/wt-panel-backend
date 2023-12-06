@@ -62,16 +62,14 @@ export class ProductsService {
         }
     }
 
-    async getSimilarProducts(
-        query: QueryRequestDto
-    ): Promise<ProductsResponse> {
+    async getSimilarProducts(query: QueryRequestDto) {
         let url: string
-        const queryForSearch: string = query.q.split('_')[0] + '_'
+        const queryForSearch = query.q.split('_')[0] + '_'
 
         if (!query.addPart) {
             url = `${this.ONE_C_URL}/list-products/${queryForSearch}/${query.page}/${query.count}`
         } else {
-            if (queryForSearch === query.addPart.split('_')[0] + '_') {
+            if (query.addPart.split('_')[0] + '_' === queryForSearch) {
                 url = `${this.ONE_C_URL}/list-products/${query.addPart}/${query.page}/${query.count}`
             } else {
                 throw new UnauthorizedException(
