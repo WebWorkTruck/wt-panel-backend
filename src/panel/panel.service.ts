@@ -233,7 +233,7 @@ export class PanelService {
                 this.httpService.post(`${this.ONE_C_URL}/${refusalUrl}`, {
                     id: body.id,
                     person: userId,
-                    description: body.reason,
+                    description: 'Комментарий при отказе:' + body.reason,
                 })
             )
             const refusal: any = response.data
