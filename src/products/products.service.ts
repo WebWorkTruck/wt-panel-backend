@@ -30,7 +30,7 @@ export class ProductsService {
             await this.cacheManager.set(
                 `products ${q} ${page} ${count}`,
                 products,
-                1000 * 60 * 5
+                1000 * 60 * 10
             )
             return products
         } catch (error) {

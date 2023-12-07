@@ -18,15 +18,14 @@ export class TimeControlService {
     private TC_AUTH_TOKEN = btoa(`${this.TC_LOGIN}:${this.TC_PASS}`)
 
     async getAvatarByUserId(userId: string): Promise<any> {
+        const avatar = await this.cacheManager.get(userId)
+        if (avatar) return avatar
         const url = 'persons/getfoto?userid='
 
         const headers = {
             'Content-Type': 'application/json',
             Authorization: `Basic ${this.TC_AUTH_TOKEN}`,
         }
-
-        const avatar = await this.cacheManager.get(userId)
-        if (avatar) return avatar
 
         try {
             const response = await firstValueFrom(

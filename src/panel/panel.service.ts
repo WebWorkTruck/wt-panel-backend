@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/axios'
-import { Injectable, UnauthorizedException } from '@nestjs/common'
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common'
 import { firstValueFrom } from 'rxjs'
 import { BadApplication } from './dto/bad-application.dto'
 import { Category } from './dto/category.dto'
@@ -9,10 +9,17 @@ import {
     ReqApplicationSaleDto,
     ReqRefusalDto,
 } from './dto/application-sale.dto'
+import { CACHE_MANAGER } from '@nestjs/cache-manager'
+import { Cache } from 'cache-manager'
+import { ReqGetDeliveryInfo } from './dto/delivery-info'
+import { ReqCreateCheck, ReqGetCheck } from './dto/check.dto'
 
 @Injectable()
 export class PanelService {
-    constructor(private readonly httpService: HttpService) {}
+    constructor(
+        private readonly httpService: HttpService,
+        @Inject(CACHE_MANAGER) private readonly cacheManager: Cache
+    ) {}
 
     private ONE_C_URL = process.env.URL_ONE_C
     private TYPES = ['Заявка', 'Продажа']
@@ -241,6 +248,106 @@ export class PanelService {
         } catch (error) {
             console.log(
                 `🆘🆘🆘 Ошибка при получении отклонённых заявок - ${error.response?.data}`
+            )
+            throw new UnauthorizedException(
+                error.response?.data?.text ||
+                    'Технические проблемы, попробуйте позже'
+            )
+        }
+    }
+    async getDeliveryInfo(query: ReqGetDeliveryInfo) {
+        const deliveryInfoUrl = `get-delivery-info`
+
+        try {
+            const response = await firstValueFrom(
+                this.httpService.get(
+                    `${this.ONE_C_URL}/${deliveryInfoUrl}/${query.id}`
+                )
+            )
+            const refusal: any = response.data
+            return refusal
+        } catch (error) {
+            console.log(
+                `🆘🆘🆘 Ошибка при получении информации о тк для продажи - ${error.response?.data}`
+            )
+            throw new UnauthorizedException(
+                error.response?.data?.text ||
+                    'Технические проблемы, попробуйте позже'
+            )
+        }
+    }
+    async getTkCities() {
+        const tkCities = await this.cacheManager.get('tk-cities')
+        if (tkCities) {
+            console.log('from-cache')
+
+            return tkCities
+        }
+        const tkCitiesUrl = `get-list-info`
+
+        try {
+            const response = await firstValueFrom(
+                this.httpService.get(`${this.ONE_C_URL}/${tkCitiesUrl}`)
+            )
+            await this.cacheManager.set(
+                'tk-cities',
+                response.data,
+                2 * 60 * 60 * 1000
+            )
+            console.log('from-1c')
+
+            return response.data
+        } catch (error) {
+            console.log(
+                `🆘🆘🆘 Ошибка при получении информации о городах и тк - ${error.response?.data}`
+            )
+            throw new UnauthorizedException(
+                error.response?.data?.text ||
+                    'Технические проблемы, попробуйте позже'
+            )
+        }
+    }
+    async getCheck(query: ReqGetCheck) {
+        const getCheckUrl = `get-check`
+
+        try {
+            const response = await firstValueFrom(
+                this.httpService.get(
+                    `${this.ONE_C_URL}/${getCheckUrl}/${query.id}`
+                )
+            )
+
+            return response.data
+        } catch (error) {
+            console.log(
+                `🆘🆘🆘 Ошибка при получении информации счёте - ${error.response?.data}`
+            )
+            throw new UnauthorizedException(
+                error.response?.data?.text ||
+                    'Технические проблемы, попробуйте позже'
+            )
+        }
+    }
+    async createCheck(body: ReqCreateCheck) {
+        const createCheckUrl = 'create-check'
+
+        try {
+            const response = await firstValueFrom(
+                this.httpService.post(
+                    `${this.ONE_C_URL}/${createCheckUrl}/${body.id}`,
+                    {
+                        org: body.org,
+                        bill: body.bill,
+                    }
+                )
+            )
+            const sale: string = response.data
+            return sale
+        } catch (error) {
+            console.log(error)
+
+            console.log(
+                `🆘🆘🆘 Ошибка при создании счёта - ${error.response?.data}`
             )
             throw new UnauthorizedException(
                 error.response?.data?.text ||

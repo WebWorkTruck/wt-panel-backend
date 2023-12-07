@@ -82,6 +82,9 @@ class ApplicationInfo {
 
     @ApiProperty()
     porter: string
+
+    @ApiProperty()
+    numCheck: string
 }
 
 export class ApplicationResponseDto {

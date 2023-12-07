@@ -16,6 +16,8 @@ import {
     ReqReturnsDto,
 } from './dto/application-sale.dto'
 import { OrgsBills } from './dto/orgs-bills.dto'
+import { DeliveryInfoRes, ReqGetDeliveryInfo } from './dto/delivery-info'
+import { ReqCreateCheck, ReqGetCheck } from './dto/check.dto'
 
 @ApiTags('panel')
 @Controller('panel')
@@ -144,5 +146,33 @@ export class PanelController {
         @SessionInfo() session: SessionInfoDto
     ) {
         return this.panelService.refusalApplication(session.id, body)
+    }
+
+    @Get('delivery-info')
+    @ApiOkResponse({ type: DeliveryInfoRes })
+    @ApiOperation({
+        summary: 'Получить информацию о доставке',
+    })
+    async deliveryInfo(@Query() query: ReqGetDeliveryInfo) {
+        const tkCities = await this.panelService.getTkCities()
+        const deliveryInfo = await this.panelService.getDeliveryInfo(query)
+
+        return { tkCities: tkCities, deliveryInfo: deliveryInfo }
+    }
+    @Get('get-check')
+    @ApiOkResponse()
+    @ApiOperation({
+        summary: 'Получить информацию о счёте',
+    })
+    async getCheck(@Query() query: ReqGetCheck) {
+        return this.panelService.getCheck(query)
+    }
+    @Post('create-check')
+    @ApiOkResponse()
+    @ApiOperation({
+        summary: 'Сформировать счёт',
+    })
+    async createCheck(@Body() body: ReqCreateCheck) {
+        return this.panelService.createCheck(body)
     }
 }
