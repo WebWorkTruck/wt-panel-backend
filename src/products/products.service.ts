@@ -5,6 +5,7 @@ import { ProductDto, ProductsResponse } from './dto/product.dto'
 import { QueryRequestDto } from './dto/search.dto'
 import { CACHE_MANAGER } from '@nestjs/cache-manager'
 import { Cache } from 'cache-manager'
+import { ReqMovePallete, ReqMoveProduct } from './dto/move-product.dto'
 
 @Injectable()
 export class ProductsService {
@@ -144,6 +145,49 @@ export class ProductsService {
         } catch (error) {
             console.log(
                 `🆘🆘🆘 Ошибка при смене товара в продаже или заявке - ${error.response?.data}`
+            )
+            throw new UnauthorizedException(
+                error.response?.data?.text ||
+                    'Технические проблемы, попробуйте позже'
+            )
+        }
+    }
+    async moveProduct(body: ReqMoveProduct) {
+        const url = `${this.ONE_C_URL}/edit-place`
+
+        try {
+            const response = await firstValueFrom(
+                this.httpService.post(url, {
+                    id: body.id,
+                    type: body.type,
+                    place: body.place,
+                })
+            )
+            return response.data
+        } catch (error) {
+            console.log(
+                `🆘🆘🆘 Ошибка при смене при перемещении товара - ${error.response?.data}`
+            )
+            throw new UnauthorizedException(
+                error.response?.data?.text ||
+                    'Технические проблемы, попробуйте позже'
+            )
+        }
+    }
+    async movePallete(body: ReqMovePallete) {
+        const url = `${this.ONE_C_URL}/replace-pallet`
+
+        try {
+            const response = await firstValueFrom(
+                this.httpService.post(url, {
+                    pallet: body.pallet,
+                    place: body.place,
+                })
+            )
+            return response.data
+        } catch (error) {
+            console.log(
+                `🆘🆘🆘 Ошибка при смене при перемещении товара - ${error.response?.data}`
             )
             throw new UnauthorizedException(
                 error.response?.data?.text ||

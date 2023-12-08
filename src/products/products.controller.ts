@@ -7,6 +7,7 @@ import {
     IssueProductInSaleReq,
     QueryRequestDto,
 } from './dto/search.dto'
+import { ReqMovePallete, ReqMoveProduct } from './dto/move-product.dto'
 
 @ApiTags('products')
 @Controller('products')
@@ -64,5 +65,21 @@ export class ProductsController {
             body.indCode,
             body.pose
         )
+    }
+    @Post('move-product')
+    @ApiOkResponse()
+    @ApiOperation({
+        summary: 'Изменение места товара',
+    })
+    moveProduct(@Body() body: ReqMoveProduct) {
+        return this.productsService.moveProduct(body)
+    }
+    @Post('move-pallete')
+    @ApiOkResponse()
+    @ApiOperation({
+        summary: 'Изменение места паллета',
+    })
+    movePallete(@Body() body: ReqMovePallete) {
+        return this.productsService.movePallete(body)
     }
 }

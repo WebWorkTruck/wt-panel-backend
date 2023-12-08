@@ -17,7 +17,7 @@ import {
 } from './dto/application-sale.dto'
 import { OrgsBills } from './dto/orgs-bills.dto'
 import { DeliveryInfoRes, ReqGetDeliveryInfo } from './dto/delivery-info'
-import { ReqCreateCheck, ReqGetCheck } from './dto/check.dto'
+import { ReqCreateCheck, ReqGetCheck, ResCheck } from './dto/check.dto'
 
 @ApiTags('panel')
 @Controller('panel')
@@ -160,13 +160,14 @@ export class PanelController {
         return { tkCities: tkCities, deliveryInfo: deliveryInfo }
     }
     @Get('get-check')
-    @ApiOkResponse()
+    @ApiOkResponse({ type: ResCheck })
     @ApiOperation({
         summary: 'Получить информацию о счёте',
     })
     async getCheck(@Query() query: ReqGetCheck) {
         return this.panelService.getCheck(query)
     }
+
     @Post('create-check')
     @ApiOkResponse()
     @ApiOperation({
