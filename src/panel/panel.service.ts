@@ -136,6 +136,7 @@ export class PanelService {
                     }
                 )
             )
+
             const applicationsAndSales: ApplicationSaleDto = response.data
             return applicationsAndSales
         } catch (error) {

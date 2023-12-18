@@ -57,8 +57,7 @@ export class ProductsService {
 
         try {
             const response = await firstValueFrom(this.httpService.get(url))
-            const product: ProductsResponse = response.data
-            return product.data[0]
+            return response.data
         } catch (error) {
             console.log(
                 `🆘🆘🆘 Ошибка при получении одного продукта - ${error.response?.data}`
@@ -71,12 +70,16 @@ export class ProductsService {
     }
 
     async getTypesProducts(): Promise<[ProductsTypesResponse]> {
+        const types: [ProductsTypesResponse] =
+            await this.cacheManager.get(`types`)
+        if (types) return types
         const url = `${this.ONE_C_URL}/types-product`
 
         try {
             const response = await firstValueFrom(this.httpService.get(url))
-            const product = response.data
-            return product
+            const types = response.data
+            await this.cacheManager.set(`types`, types, 1000 * 60 * 10)
+            return types
         } catch (error) {
             console.log(error)
 
