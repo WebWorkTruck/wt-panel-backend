@@ -14,12 +14,16 @@ export class QueryRequestDto {
     page: string
     @ApiProperty()
     count: string
+
+    @ApiProperty({ required: false })
+    @IsOptional()
+    pk?: number
 }
 export class IssueProductInSaleReq {
     @ApiProperty()
     id: string
     @ApiProperty()
-    pose: string[]
+    pose: number
 }
 export class ChangeProductInAppSale {
     @ApiProperty()
@@ -29,5 +33,5 @@ export class ChangeProductInAppSale {
     @ApiProperty()
     indCode: string
     @ApiProperty()
-    pose: string
+    pose: number
 }

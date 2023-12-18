@@ -40,10 +40,10 @@ export class AuthService {
             return { accessToken }
         } catch (error) {
             console.log(
-                `🆘🆘🆘 Ошибка при авторизации при помощи 1С - ${error.response?.data.text}`
+                `🆘🆘🆘 Ошибка при авторизации при помощи 1С - ${error.response?.data.errorMessage}`
             )
             throw new UnauthorizedException(
-                error.response?.data?.text ||
+                error.response?.data?.errorMessage ||
                     'Технические проблемы, попробуйте позже'
             )
         }

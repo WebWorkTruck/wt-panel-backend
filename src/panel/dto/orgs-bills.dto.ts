@@ -7,14 +7,6 @@ export class Org {
     name: string
 }
 
-export class OrgsInfo {
-    @ApiProperty()
-    count: number
-
-    @ApiProperty({ type: [Org] })
-    data: Org[]
-}
-
 export class Bill {
     @ApiProperty()
     id: string
@@ -23,18 +15,10 @@ export class Bill {
     name: string
 }
 
-export class BillsInfo {
-    @ApiProperty()
-    count: number
+export class OrgsBills {
+    @ApiProperty({ type: [Org] })
+    orgs: Org[]
 
     @ApiProperty({ type: [Bill] })
-    data: Bill[]
-}
-
-export class OrgsBills {
-    @ApiProperty({ type: OrgsInfo })
-    orgs: OrgsInfo
-
-    @ApiProperty({ type: BillsInfo })
-    bills: BillsInfo
+    bills: Bill[]
 }

@@ -1,8 +1,12 @@
 import { HttpService } from '@nestjs/axios'
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common'
 import { firstValueFrom } from 'rxjs'
-import { ProductDto, ProductsResponse } from './dto/product.dto'
-import { QueryRequestDto } from './dto/search.dto'
+import {
+    ProductDto,
+    ProductsResponse,
+    ProductsTypesResponse,
+} from './dto/product.dto'
+import { ChangeProductInAppSale, QueryRequestDto } from './dto/search.dto'
 import { CACHE_MANAGER } from '@nestjs/cache-manager'
 import { Cache } from 'cache-manager'
 import { ReqMovePallete, ReqMoveProduct } from './dto/move-product.dto'
@@ -15,24 +19,27 @@ export class ProductsService {
     ) {}
     private ONE_C_URL = process.env.URL_ONE_C
 
-    async getProducts(q: string, page: string, count: string) {
+    async getProducts(query: QueryRequestDto) {
         const products = await this.cacheManager.get(
-            `products ${q} ${page} ${count}`
+            `products ${query.q} ${query.page} ${query.count} ${query.pk}`
         )
         if (products) return products
         let url: string
 
-        if (!q) url = `${this.ONE_C_URL}/list-products/ /${page}/${count}`
-        if (q) url = `${this.ONE_C_URL}/list-products/${q}/${page}/${count}`
+        if (!query.q)
+            url = `${this.ONE_C_URL}/list-products/ /${query.page}/${query.count}/${query.pk}`
+        if (query.q)
+            url = `${this.ONE_C_URL}/list-products/${query.q}/${query.page}/${query.count}/${query.pk}`
 
         try {
             const response = await firstValueFrom(this.httpService.get(url))
             const products: ProductsResponse = response.data
             await this.cacheManager.set(
-                `products ${q} ${page} ${count}`,
+                `products ${query.q} ${query.page} ${query.count} ${query.pk}`,
                 products,
                 1000 * 60 * 10
             )
+
             return products
         } catch (error) {
             console.log(
@@ -63,15 +70,35 @@ export class ProductsService {
         }
     }
 
+    async getTypesProducts(): Promise<[ProductsTypesResponse]> {
+        const url = `${this.ONE_C_URL}/types-product`
+
+        try {
+            const response = await firstValueFrom(this.httpService.get(url))
+            const product = response.data
+            return product
+        } catch (error) {
+            console.log(error)
+
+            console.log(
+                `🆘🆘🆘 Ошибка при получении типов продуктов - ${error.response?.data}`
+            )
+            throw new UnauthorizedException(
+                error.response?.data?.text ||
+                    'Технические проблемы, попробуйте позже'
+            )
+        }
+    }
+
     async getSimilarProducts(query: QueryRequestDto) {
         let url: string
         const queryForSearch = query.q.split('_')[0] + '_'
 
         if (!query.addPart) {
-            url = `${this.ONE_C_URL}/list-products/${queryForSearch}/${query.page}/${query.count}`
+            url = `${this.ONE_C_URL}/list-products/${queryForSearch}/${query.page}/${query.count}/3`
         } else {
             if (query.addPart.split('_')[0] + '_' === queryForSearch) {
-                url = `${this.ONE_C_URL}/list-products/${query.addPart}/${query.page}/${query.count}`
+                url = `${this.ONE_C_URL}/list-products/${query.addPart}/${query.page}/${query.count}/3`
             } else {
                 throw new UnauthorizedException(
                     'Товар не принадлежит данной карточке'
@@ -111,13 +138,11 @@ export class ProductsService {
         }
     }
 
-    async issueProductInSale(id: string, pose: string[]) {
+    async issueProductInSale(id: string, pose: number) {
         const url = `${this.ONE_C_URL}/issue-sale/${id}`
-        const poseeNumbers = pose.map(Number)
-
         try {
             const response = await firstValueFrom(
-                this.httpService.post(url, { pose: poseeNumbers })
+                this.httpService.post(url, { pose: pose })
             )
 
             return response.data
@@ -131,7 +156,11 @@ export class ProductsService {
             )
         }
     }
-    async changeProductInAppSale(id: string, indCode: string, pose: string) {
+    async changeProductInAppSale({
+        id,
+        indCode,
+        pose,
+    }: ChangeProductInAppSale) {
         const url = `${this.ONE_C_URL}/filling-application/${id}`
 
         try {

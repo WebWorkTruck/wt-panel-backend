@@ -13,7 +13,7 @@ class SaleDto {
     name: string
 
     @ApiProperty()
-    position: string
+    position: number
 
     @ApiProperty()
     cost: string

@@ -56,6 +56,7 @@ export class SalesService {
     }
     async createSale(body: CreateSaleDto) {
         const createSaleUrl = 'create-sale'
+        console.log(body.date)
 
         try {
             const response = await firstValueFrom(

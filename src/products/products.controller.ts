@@ -1,7 +1,11 @@
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common'
 import { ProductsService } from './products.service'
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
-import { ProductDto, ProductsResponse } from './dto/product.dto'
+import {
+    ProductDto,
+    ProductsResponse,
+    ProductsTypesResponse,
+} from './dto/product.dto'
 import {
     ChangeProductInAppSale,
     IssueProductInSaleReq,
@@ -20,11 +24,7 @@ export class ProductsController {
         summary: 'Получение товаров по запросу',
     })
     getProducts(@Query() query: QueryRequestDto) {
-        return this.productsService.getProducts(
-            query.q,
-            query.page,
-            query.count
-        )
+        return this.productsService.getProducts(query)
     }
 
     @Get('one-product/:id')
@@ -34,6 +34,14 @@ export class ProductsController {
     })
     getProduct(@Param('id') id: string) {
         return this.productsService.getProduct(id)
+    }
+    @Get('type-products')
+    @ApiOkResponse({ type: [ProductsTypesResponse] })
+    @ApiOperation({
+        summary: 'Получение типов продуктов',
+    })
+    getTypesProduct() {
+        return this.productsService.getTypesProducts()
     }
 
     @Get('similar-products')
@@ -60,11 +68,7 @@ export class ProductsController {
         summary: 'Изменение товара в заявке или продаже',
     })
     changeProductInAppSale(@Body() body: ChangeProductInAppSale) {
-        return this.productsService.changeProductInAppSale(
-            body.id,
-            body.indCode,
-            body.pose
-        )
+        return this.productsService.changeProductInAppSale(body)
     }
     @Post('move-product')
     @ApiOkResponse()

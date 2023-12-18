@@ -38,3 +38,14 @@ export class ProductsResponse {
     @ApiProperty({ type: [ProductDto] })
     data: ProductDto[]
 }
+
+export class ProductsTypesResponse {
+    @ApiProperty()
+    id: number
+
+    @ApiProperty()
+    count: number
+
+    @ApiProperty()
+    title: string
+}
