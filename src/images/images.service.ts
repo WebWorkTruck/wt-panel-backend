@@ -4,6 +4,7 @@ import { firstValueFrom } from 'rxjs'
 import * as sharp from 'sharp'
 import { CACHE_MANAGER } from '@nestjs/cache-manager'
 import { Cache } from 'cache-manager'
+import { ReqStatisticsOfPhotos } from './dto/statistics-of-photos.dto'
 @Injectable()
 export class ImagesService {
     constructor(
@@ -125,5 +126,23 @@ export class ImagesService {
                 throw new UnauthorizedException(error.response?.data?.text)
             }
         })
+    }
+    async getStatisticOfPhotos(query: ReqStatisticsOfPhotos) {
+        const statisticOfPhotosUrl = `${this.IMAGE_SERVICE_URL}/v1/stats/${query.year}/${query.month}`
+
+        try {
+            const response = await firstValueFrom(
+                this.httpService.get(statisticOfPhotosUrl)
+            )
+            return response.data
+        } catch (error) {
+            console.log(
+                `🆘🆘🆘 Ошибка при получении статистики о фотографиях - ${error.response?.data}`
+            )
+            throw new UnauthorizedException(
+                error.response?.data?.text ||
+                    'Технические проблемы, попробуйте позже'
+            )
+        }
     }
 }

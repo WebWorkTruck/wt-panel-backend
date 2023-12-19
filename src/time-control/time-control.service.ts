@@ -106,7 +106,6 @@ export class TimeControlService {
             )
 
             const timeWorks = response.data
-
             let totalWorkHours = 0
             const workTimes = [] // массив будет содержать объекты со стартовым и конечным временем
             let absencesCount = 0

@@ -7,9 +7,20 @@ import {
     UseInterceptors,
     UploadedFiles,
     Body,
+    Get,
 } from '@nestjs/common'
 import { ImagesService } from './images.service'
-import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger'
+import {
+    ApiBody,
+    ApiConsumes,
+    ApiOkResponse,
+    ApiOperation,
+    ApiTags,
+} from '@nestjs/swagger'
+import {
+    ReqStatisticsOfPhotos,
+    ResStatisticsOfPhotos,
+} from './dto/statistics-of-photos.dto'
 
 @ApiTags('images')
 @Controller('images')
@@ -47,5 +58,16 @@ export class ImagesController {
         @Query('image') images: string[]
     ) {
         return this.imagesService.deleteImage(productId, images)
+    }
+
+    @Get('statistics-of-photos')
+    @ApiOkResponse({
+        type: ResStatisticsOfPhotos,
+    })
+    @ApiOperation({
+        summary: 'Получение списка всех транспортных компаний',
+    })
+    getStatustucsOfPhotos(@Query() query: ReqStatisticsOfPhotos) {
+        return this.imagesService.getStatisticOfPhotos(query)
     }
 }
