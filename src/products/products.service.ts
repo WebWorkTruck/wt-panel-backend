@@ -81,8 +81,6 @@ export class ProductsService {
             await this.cacheManager.set(`types`, types, 1000 * 60 * 10)
             return types
         } catch (error) {
-            console.log(error)
-
             console.log(
                 `🆘🆘🆘 Ошибка при получении типов продуктов - ${error.response?.data}`
             )
