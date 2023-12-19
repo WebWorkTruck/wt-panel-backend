@@ -51,8 +51,13 @@ export class ImagesService {
         }
     }
 
-    async addImages(productId: string, files: Express.Multer.File[]) {
-        const url = `${this.IMAGE_SERVICE_URL}/v1/images/${productId}`
+    async addImages(
+        productId: string,
+        userId: string,
+        username: string,
+        files: Express.Multer.File[]
+    ) {
+        const url = `${this.IMAGE_SERVICE_URL}/v1/images/${productId}?tabnum=${userId}&user_name=${username}`
 
         const formData = new FormData()
 

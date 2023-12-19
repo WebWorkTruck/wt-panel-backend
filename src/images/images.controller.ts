@@ -35,6 +35,8 @@ export class ImagesController {
             type: 'object',
             properties: {
                 productId: { type: 'string', format: 'string' },
+                userId: { type: 'string', format: 'string' },
+                username: { type: 'string', format: 'string' },
                 files: {
                     type: 'array',
                     items: {
@@ -49,7 +51,12 @@ export class ImagesController {
         @UploadedFiles() files: Express.Multer.File[],
         @Body() body: any
     ) {
-        return this.imagesService.addImages(body.productId, files)
+        return this.imagesService.addImages(
+            body.productId,
+            body.userId,
+            body.username,
+            files
+        )
     }
 
     @Delete()
