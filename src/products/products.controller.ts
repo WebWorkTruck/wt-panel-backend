@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common'
+import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common'
 import { ProductsService } from './products.service'
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
 import {
@@ -11,7 +11,11 @@ import {
     IssueProductInSaleReq,
     QueryRequestDto,
 } from './dto/search.dto'
-import { ReqMovePallete, ReqMoveProduct } from './dto/move-product.dto'
+import {
+    ReqAssignMainPhoto,
+    ReqMovePallete,
+    ReqMoveProduct,
+} from './dto/move-product.dto'
 
 @ApiTags('products')
 @Controller('products')
@@ -85,5 +89,13 @@ export class ProductsController {
     })
     movePallete(@Body() body: ReqMovePallete) {
         return this.productsService.movePallete(body)
+    }
+    @Put('assign-main-photo')
+    @ApiOkResponse()
+    @ApiOperation({
+        summary: 'Назначить фотографию главной',
+    })
+    assignMainPhoto(@Query() query: ReqAssignMainPhoto) {
+        return this.productsService.assignMainPhoto(query)
     }
 }

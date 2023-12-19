@@ -9,7 +9,11 @@ import {
 import { ChangeProductInAppSale, QueryRequestDto } from './dto/search.dto'
 import { CACHE_MANAGER } from '@nestjs/cache-manager'
 import { Cache } from 'cache-manager'
-import { ReqMovePallete, ReqMoveProduct } from './dto/move-product.dto'
+import {
+    ReqAssignMainPhoto,
+    ReqMovePallete,
+    ReqMoveProduct,
+} from './dto/move-product.dto'
 
 @Injectable()
 export class ProductsService {
@@ -18,6 +22,7 @@ export class ProductsService {
         @Inject(CACHE_MANAGER) private readonly cacheManager: Cache
     ) {}
     private ONE_C_URL = process.env.URL_ONE_C
+    private IMAGE_SERVICE_URL = process.env.IMAGE_SERVICE_URL
 
     async getProducts(query: QueryRequestDto) {
         const products = await this.cacheManager.get(
@@ -218,6 +223,25 @@ export class ProductsService {
         } catch (error) {
             console.log(
                 `🆘🆘🆘 Ошибка при смене при перемещении товара - ${error.response?.data}`
+            )
+            throw new UnauthorizedException(
+                error.response?.data?.text ||
+                    'Технические проблемы, попробуйте позже'
+            )
+        }
+    }
+    async assignMainPhoto(query: ReqAssignMainPhoto) {
+        const image = query.imageUrl.substring(
+            query.imageUrl.lastIndexOf('/') + 1
+        )
+        const url = `${this.IMAGE_SERVICE_URL}/v1/images/${query.productId}?type=${query.type}&image_name=${image}`
+
+        try {
+            const response = await firstValueFrom(this.httpService.put(url))
+            return response.data
+        } catch (error) {
+            console.log(
+                `🆘🆘🆘 Ошибка при назначении фотографии главной - ${error.response?.data}`
             )
             throw new UnauthorizedException(
                 error.response?.data?.text ||

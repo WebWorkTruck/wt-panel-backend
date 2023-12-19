@@ -14,3 +14,11 @@ export class ReqMovePallete {
     @ApiProperty()
     place: string
 }
+export class ReqAssignMainPhoto {
+    @ApiProperty()
+    productId: string
+    @ApiProperty()
+    type: string
+    @ApiProperty()
+    imageUrl: string
+}
