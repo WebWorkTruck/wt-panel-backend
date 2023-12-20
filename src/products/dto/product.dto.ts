@@ -21,6 +21,15 @@ export class ProductDto {
 
     @ApiProperty()
     sklad: string
+
+    @ApiProperty()
+    poddon: string
+
+    @ApiProperty()
+    pk: boolean
+
+    @ApiProperty()
+    place: boolean
 }
 
 class ProductInfo {
