@@ -22,3 +22,12 @@ export class ReqAssignMainPhoto {
     @ApiProperty()
     imageUrl: string
 }
+
+export class ReqEditProduct {
+    @ApiProperty()
+    id: string
+    @ApiProperty()
+    comment: string
+    @ApiProperty()
+    cost: number
+}

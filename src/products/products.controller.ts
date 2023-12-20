@@ -13,6 +13,7 @@ import {
 } from './dto/search.dto'
 import {
     ReqAssignMainPhoto,
+    ReqEditProduct,
     ReqMovePallete,
     ReqMoveProduct,
 } from './dto/move-product.dto'
@@ -97,5 +98,13 @@ export class ProductsController {
     })
     assignMainPhoto(@Query() query: ReqAssignMainPhoto) {
         return this.productsService.assignMainPhoto(query)
+    }
+    @Post('edit')
+    @ApiOkResponse()
+    @ApiOperation({
+        summary: 'Изменение цены и комментарийя продукта',
+    })
+    editProduct(@Body() body: ReqEditProduct) {
+        return this.productsService.editProduct(body)
     }
 }

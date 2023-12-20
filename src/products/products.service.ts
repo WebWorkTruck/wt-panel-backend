@@ -11,6 +11,7 @@ import { CACHE_MANAGER } from '@nestjs/cache-manager'
 import { Cache } from 'cache-manager'
 import {
     ReqAssignMainPhoto,
+    ReqEditProduct,
     ReqMovePallete,
     ReqMoveProduct,
 } from './dto/move-product.dto'
@@ -242,6 +243,29 @@ export class ProductsService {
         } catch (error) {
             console.log(
                 `🆘🆘🆘 Ошибка при назначении фотографии главной - ${error.response?.data}`
+            )
+            throw new UnauthorizedException(
+                error.response?.data?.text ||
+                    'Технические проблемы, попробуйте позже'
+            )
+        }
+    }
+
+    async editProduct(body: ReqEditProduct) {
+        const url = `${this.ONE_C_URL}/edit-product`
+
+        try {
+            const response = await firstValueFrom(
+                this.httpService.post(url, {
+                    id: body.id,
+                    coment: body.comment,
+                    cost: body.cost,
+                })
+            )
+            return response.data
+        } catch (error) {
+            console.log(
+                `🆘🆘🆘 Ошибка при смене при изменении товара - ${error.response?.data}`
             )
             throw new UnauthorizedException(
                 error.response?.data?.text ||
