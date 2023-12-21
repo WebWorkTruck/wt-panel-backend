@@ -60,6 +60,10 @@ export class TimeControlService {
         }
     }
     async getInfoUser(userId: string) {
+        const uid = await this.cacheManager.get(
+            'uid-user-time-controll' + userId
+        )
+        if (uid) return uid
         const url = `persons?tabnum=${userId}`
 
         const headers = {
@@ -75,11 +79,14 @@ export class TimeControlService {
             )
 
             const userData: any = response.data
+            await this.cacheManager.set(
+                'uid-user-time-controll' + userId,
+                userData.data[0].UID,
+                0
+            )
 
             return userData.data[0].UID
         } catch (error) {
-            console.log(error)
-
             console.log(
                 `🆘🆘🆘 Ошибка при получении информации о пользователе (TimeControl) - ${error.response?.data?.error}`
             )
@@ -112,25 +119,36 @@ export class TimeControlService {
             let lateArrivalsCount = 0
             let overtimesCount = 0
 
-            timeWorks.data.forEach(record => {
-                if (record.DAYTYPE === '0') {
-                    totalWorkHours += parseInt(record.FACT_MIN_WORK) || 0
+            timeWorks.data.forEach(
+                (record: {
+                    DAYTYPE: string
+                    FACT_MIN_WORK: string
+                    FACT_START_TIME: string
+                    FACT_END_TIME: string
+                    WORKDATE: any
+                    PROGUL: string
+                    OPOZD: string
+                    ZADERJ: string
+                }) => {
+                    if (record.DAYTYPE === '0') {
+                        totalWorkHours += parseInt(record.FACT_MIN_WORK) || 0
 
-                    const startTime = record.FACT_START_TIME.split(' ')[1] // Получаем "9:00:00" из "23.10.2023 9:00:00"
-                    const endTime = record.FACT_END_TIME.split(' ')[1] // Получаем "18:00:00" из "23.10.2023 18:00:00"
+                        const startTime = record.FACT_START_TIME.split(' ')[1] // Получаем "9:00:00" из "23.10.2023 9:00:00"
+                        const endTime = record.FACT_END_TIME.split(' ')[1] // Получаем "18:00:00" из "23.10.2023 18:00:00"
 
-                    workTimes.push({
-                        day: record.WORKDATE,
-                        startTime: startTime,
-                        endTime: endTime,
-                    })
+                        workTimes.push({
+                            day: record.WORKDATE,
+                            startTime: startTime,
+                            endTime: endTime,
+                        })
 
-                    // Дополнительные проверки отсутствия и т.д.
-                    if (record.PROGUL !== '0') absencesCount++
-                    if (record.OPOZD !== '0') lateArrivalsCount++
-                    if (record.ZADERJ !== '0') overtimesCount++
+                        // Дополнительные проверки отсутствия и т.д.
+                        if (record.PROGUL !== '0') absencesCount++
+                        if (record.OPOZD !== '0') lateArrivalsCount++
+                        if (record.ZADERJ !== '0') overtimesCount++
+                    }
                 }
-            })
+            )
 
             // Итоговые данные
             const result = {

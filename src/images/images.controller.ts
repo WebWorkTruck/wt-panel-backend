@@ -28,7 +28,7 @@ export class ImagesController {
     constructor(private readonly imagesService: ImagesService) {}
 
     @Post()
-    @UseInterceptors(FilesInterceptor('files', 10))
+    @UseInterceptors(FilesInterceptor('files', 30))
     @ApiConsumes('multipart/form-data')
     @ApiBody({
         schema: {

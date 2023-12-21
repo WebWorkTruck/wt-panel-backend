@@ -12,6 +12,7 @@ import { ConfigModule } from '@nestjs/config'
 import { ImagesModule } from './images/images.module'
 import { LocationsModule } from './locations/locations.module'
 import { TransportCompanyModule } from './transport-company/transport-company.module'
+import { CartModule } from './cart/cart.module'
 
 @Module({
     imports: [
@@ -28,6 +29,7 @@ import { TransportCompanyModule } from './transport-company/transport-company.mo
         ImagesModule,
         LocationsModule,
         TransportCompanyModule,
+        CartModule,
     ],
     controllers: [AppController],
     providers: [AppService],
