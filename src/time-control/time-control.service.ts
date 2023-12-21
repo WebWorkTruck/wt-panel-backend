@@ -20,6 +20,8 @@ export class TimeControlService {
     async getAvatarByUserId(userId: string): Promise<any> {
         const avatar = await this.cacheManager.get(userId)
         if (avatar) return avatar
+        console.log('fetch avatar')
+
         const url = 'persons/getfoto?userid='
 
         const headers = {
@@ -64,6 +66,8 @@ export class TimeControlService {
             'uid-user-time-controll' + userId
         )
         if (uid) return uid
+        console.log('fetch info user (uid)')
+
         const url = `persons?tabnum=${userId}`
 
         const headers = {
@@ -98,6 +102,12 @@ export class TimeControlService {
     }
 
     async getTimeWorkUser(userId: string, startDate: string, endDate: string) {
+        const timeWorkUser = await this.cacheManager.get(
+            'time-work-user' + userId + startDate + endDate
+        )
+        if (timeWorkUser) return timeWorkUser
+        console.log('fetch time of work')
+
         const url = `time/works?startdate=${startDate}&enddate=${endDate}&person_list=${userId}`
 
         const headers = {
@@ -159,6 +169,12 @@ export class TimeControlService {
                 lateArrivalsCount,
                 overtimesCount,
             }
+
+            await this.cacheManager.set(
+                'time-work-user' + userId + startDate + endDate,
+                result,
+                60 * 1000 * 15
+            )
 
             return result
         } catch (error) {

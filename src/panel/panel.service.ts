@@ -293,7 +293,7 @@ export class PanelService {
             await this.cacheManager.set(
                 'tk-cities',
                 response.data,
-                2 * 60 * 60 * 1000
+                1000 * 60 * 60 * 24
             )
             console.log('from-1c')
 
