@@ -14,7 +14,10 @@ import {
     ReqEditProduct,
     ReqMovePallete,
     ReqMoveProduct,
+    ReqSendToLost,
 } from './dto/move-product.dto'
+import { ReqLostProductsDto } from './dto/lost-products.dto'
+import { SessionInfoDto } from 'src/auth/dto/session.dto'
 
 @Injectable()
 export class ProductsService {
@@ -188,7 +191,7 @@ export class ProductsService {
             )
         }
     }
-    async moveProduct(body: ReqMoveProduct) {
+    async moveProduct(body: ReqMoveProduct, session: SessionInfoDto) {
         const url = `${this.ONE_C_URL}/edit-place`
 
         try {
@@ -197,6 +200,7 @@ export class ProductsService {
                     id: body.id,
                     type: body.type,
                     place: body.place,
+                    author: session.id,
                 })
             )
             return response.data
@@ -266,6 +270,47 @@ export class ProductsService {
         } catch (error) {
             console.log(
                 `🆘🆘🆘 Ошибка при смене при изменении товара - ${error.response?.data}`
+            )
+            throw new UnauthorizedException(
+                error.response?.data?.text ||
+                    'Технические проблемы, попробуйте позже'
+            )
+        }
+    }
+
+    async getLostProducts(query: ReqLostProductsDto) {
+        let url = `${this.ONE_C_URL}/get-lost/${query.page}/${query.count}/`
+
+        try {
+            const response = await firstValueFrom(this.httpService.get(url))
+            const products: ProductsResponse = response.data
+
+            return products
+        } catch (error) {
+            console.log(
+                `🆘🆘🆘 Ошибка при получении продуктов - ${error.response?.data}`
+            )
+            throw new UnauthorizedException(
+                error.response?.data?.text ||
+                    'Технические проблемы, попробуйте позже'
+            )
+        }
+    }
+
+    async removeToLost(body: ReqSendToLost, userId: string) {
+        const url = `${this.ONE_C_URL}/remove-to-lost`
+
+        try {
+            const response = await firstValueFrom(
+                this.httpService.post(url, {
+                    ids: body.ids,
+                    author: userId,
+                })
+            )
+            return response.data
+        } catch (error) {
+            console.log(
+                `🆘🆘🆘 Ошибка при смене при отправке товаров в потерянные - ${error.response?.data}`
             )
             throw new UnauthorizedException(
                 error.response?.data?.text ||

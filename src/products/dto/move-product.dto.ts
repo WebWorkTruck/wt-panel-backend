@@ -31,3 +31,7 @@ export class ReqEditProduct {
     @ApiProperty()
     cost: number
 }
+export class ReqSendToLost {
+    @ApiProperty()
+    ids: string[]
+}

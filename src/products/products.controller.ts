@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common'
+import {
+    Body,
+    Controller,
+    Get,
+    Param,
+    Post,
+    Put,
+    Query,
+    UseGuards,
+} from '@nestjs/common'
 import { ProductsService } from './products.service'
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
 import {
@@ -16,7 +25,12 @@ import {
     ReqEditProduct,
     ReqMovePallete,
     ReqMoveProduct,
+    ReqSendToLost,
 } from './dto/move-product.dto'
+import { ReqLostProductsDto } from './dto/lost-products.dto'
+import { AuthGuard } from 'src/auth/auth.guard'
+import { SessionInfo } from 'src/auth/session-info.decorator'
+import { SessionInfoDto } from 'src/auth/dto/session.dto'
 
 @ApiTags('products')
 @Controller('products')
@@ -80,8 +94,12 @@ export class ProductsController {
     @ApiOperation({
         summary: 'Изменение места товара',
     })
-    moveProduct(@Body() body: ReqMoveProduct) {
-        return this.productsService.moveProduct(body)
+    @UseGuards(AuthGuard)
+    moveProduct(
+        @Body() body: ReqMoveProduct,
+        @SessionInfo() session: SessionInfoDto
+    ) {
+        return this.productsService.moveProduct(body, session)
     }
     @Post('move-pallete')
     @ApiOkResponse()
@@ -106,5 +124,25 @@ export class ProductsController {
     })
     editProduct(@Body() body: ReqEditProduct) {
         return this.productsService.editProduct(body)
+    }
+    @Get('lost-products')
+    @ApiOkResponse({ type: ProductsResponse })
+    @ApiOperation({
+        summary: 'Получение потерянных продуктов',
+    })
+    getLostProducts(@Query() query: ReqLostProductsDto) {
+        return this.productsService.getLostProducts(query)
+    }
+    @Post('remove-to-lost')
+    @ApiOkResponse()
+    @ApiOperation({
+        summary: 'Перемещение массива товаров в список потерянных',
+    })
+    @UseGuards(AuthGuard)
+    removeToLost(
+        @Body() body: ReqSendToLost,
+        @SessionInfo() session: SessionInfoDto
+    ) {
+        return this.productsService.removeToLost(body, session.id)
     }
 }
