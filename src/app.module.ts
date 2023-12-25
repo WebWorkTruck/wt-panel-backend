@@ -13,7 +13,7 @@ import { ImagesModule } from './images/images.module'
 import { LocationsModule } from './locations/locations.module'
 import { TransportCompanyModule } from './transport-company/transport-company.module'
 import { CartModule } from './cart/cart.module'
-import { PoddonsModule } from './poddons/poddons.module';
+import { PoddonsModule } from './poddons/poddons.module'
 
 @Module({
     imports: [
