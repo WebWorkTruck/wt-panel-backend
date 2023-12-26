@@ -215,19 +215,19 @@ export class ProductsService {
         }
     }
     async movePallete(body: ReqMovePallete) {
-        const url = `${this.ONE_C_URL}/replace-pallet`
+        const url = `${this.ONE_C_URL}/move-shelf`
 
         try {
             const response = await firstValueFrom(
                 this.httpService.post(url, {
                     pallet: body.pallet,
-                    place: body.place,
+                    shelf: body.place,
                 })
             )
             return response.data
         } catch (error) {
             console.log(
-                `🆘🆘🆘 Ошибка при смене при перемещении товара - ${error.response?.data}`
+                `🆘🆘🆘 Ошибка при смене при перемещении поддона - ${error.response?.data}`
             )
             throw new UnauthorizedException(
                 error.response?.data?.text ||
