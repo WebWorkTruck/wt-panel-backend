@@ -214,7 +214,7 @@ export class ProductsService {
             )
         }
     }
-    async movePallete(body: ReqMovePallete) {
+    async movePallete(body: ReqMovePallete, userId: string) {
         const url = `${this.ONE_C_URL}/move-shelf`
 
         try {
@@ -222,6 +222,7 @@ export class ProductsService {
                 this.httpService.post(url, {
                     pallet: body.pallet,
                     shelf: body.place,
+                    author: userId,
                 })
             )
             return response.data

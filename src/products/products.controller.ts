@@ -106,8 +106,12 @@ export class ProductsController {
     @ApiOperation({
         summary: 'Изменение места паллета',
     })
-    movePallete(@Body() body: ReqMovePallete) {
-        return this.productsService.movePallete(body)
+    @UseGuards(AuthGuard)
+    movePallete(
+        @Body() body: ReqMovePallete,
+        @SessionInfo() session: SessionInfoDto
+    ) {
+        return this.productsService.movePallete(body, session.id)
     }
     @Put('assign-main-photo')
     @ApiOkResponse()
