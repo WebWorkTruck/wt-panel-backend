@@ -1,18 +1,19 @@
-import { Controller, Get, UseGuards } from '@nestjs/common'
+import { Controller, Get, Query, UseGuards } from '@nestjs/common'
 import { CartService } from './cart.service'
-import { AuthGuard } from 'src/auth/auth.guard'
-import { SessionInfo } from 'src/auth/session-info.decorator'
-import { SessionInfoDto } from 'src/auth/dto/session.dto'
-import { ApiTags } from '@nestjs/swagger'
+
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger'
+import { ReqFindCartUserDto, ResCartDto } from './dto/cart.dto'
 
 @ApiTags('cart')
 @Controller('cart')
 export class CartController {
     constructor(private readonly cartService: CartService) {}
 
-    @Get()
-    @UseGuards(AuthGuard)
-    findCartUser(@SessionInfo() session: SessionInfoDto) {
-        return session.id
+    @Get('get-cart')
+    @ApiOkResponse({
+        type: ResCartDto,
+    })
+    getcart(@Query() query: ReqFindCartUserDto) {
+        return this.cartService.getCart(query)
     }
 }

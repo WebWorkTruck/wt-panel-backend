@@ -107,7 +107,7 @@ export class PanelService {
         }
     }
 
-    async moveApplicationSale(userId: string, body: MoveApplicationSaleDto) {
+    async moveApplicationSale(body: MoveApplicationSaleDto, userId: string) {
         const moveApplicationUrl = `${this.ONE_C_URL}/edit-application`
         const moveSaleUrl = `${this.ONE_C_URL}/edit-sale`
         let title_for_commen: string
@@ -133,6 +133,7 @@ export class PanelService {
                         sub_processing: body.sub_processing,
                         description:
                             title_for_commen + body.comment_for_collector,
+                        author: userId,
                     }
                 )
             )
@@ -233,7 +234,7 @@ export class PanelService {
         }
     }
 
-    async refusalApplication(userId: string, body: ReqRefusalDto) {
+    async refusalApplication(body: ReqRefusalDto, userId: string) {
         const refusalUrl = `cancel-application`
 
         try {
@@ -242,6 +243,7 @@ export class PanelService {
                     id: body.id,
                     person: userId,
                     description: 'Комментарий при отказе:' + body.reason,
+                    author: userId,
                 })
             )
             const refusal: any = response.data
@@ -329,7 +331,7 @@ export class PanelService {
             )
         }
     }
-    async createCheck(body: ReqCreateCheck) {
+    async createCheck(body: ReqCreateCheck, userId: string) {
         const createCheckUrl = 'create-check'
 
         try {
@@ -339,14 +341,13 @@ export class PanelService {
                     {
                         org: body.org,
                         bill: body.bill,
+                        author: userId,
                     }
                 )
             )
             const sale: string = response.data
             return sale
         } catch (error) {
-            console.log(error)
-
             console.log(
                 `🆘🆘🆘 Ошибка при создании счёта - ${error.response?.data}`
             )

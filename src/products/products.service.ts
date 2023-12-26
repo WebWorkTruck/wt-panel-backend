@@ -6,7 +6,11 @@ import {
     ProductsResponse,
     ProductsTypesResponse,
 } from './dto/product.dto'
-import { ChangeProductInAppSale, QueryRequestDto } from './dto/search.dto'
+import {
+    ChangeProductInAppSale,
+    IssueProductInSaleReq,
+    QueryRequestDto,
+} from './dto/search.dto'
 import { CACHE_MANAGER } from '@nestjs/cache-manager'
 import { Cache } from 'cache-manager'
 import {
@@ -18,6 +22,7 @@ import {
 } from './dto/move-product.dto'
 import { ReqLostProductsDto } from './dto/lost-products.dto'
 import { SessionInfoDto } from 'src/auth/dto/session.dto'
+import { ReqAddToZakazNaryad } from './dto/add-product-to-zakaz-naryad'
 
 @Injectable()
 export class ProductsService {
@@ -148,11 +153,11 @@ export class ProductsService {
         }
     }
 
-    async issueProductInSale(id: string, pose: number) {
-        const url = `${this.ONE_C_URL}/issue-sale/${id}`
+    async issueProductInSale(body: IssueProductInSaleReq, userId: string) {
+        const url = `${this.ONE_C_URL}/issue-sale/${body.id}`
         try {
             const response = await firstValueFrom(
-                this.httpService.post(url, { pose: pose })
+                this.httpService.post(url, { pose: body.pose, author: userId })
             )
 
             return response.data
@@ -166,18 +171,15 @@ export class ProductsService {
             )
         }
     }
-    async changeProductInAppSale({
-        id,
-        indCode,
-        pose,
-    }: ChangeProductInAppSale) {
-        const url = `${this.ONE_C_URL}/filling-application/${id}`
+    async changeProductInAppSale(body: ChangeProductInAppSale, userId: string) {
+        const url = `${this.ONE_C_URL}/filling-application/${body.id}`
 
         try {
             const response = await firstValueFrom(
                 this.httpService.post(url, {
-                    indCOde: indCode,
-                    pose: pose,
+                    indCOde: body.indCode,
+                    pose: body.pose,
+                    author: userId,
                 })
             )
             return response.data
@@ -191,7 +193,7 @@ export class ProductsService {
             )
         }
     }
-    async moveProduct(body: ReqMoveProduct, session: SessionInfoDto) {
+    async moveProduct(body: ReqMoveProduct, userId: string) {
         const url = `${this.ONE_C_URL}/edit-place`
 
         try {
@@ -200,7 +202,7 @@ export class ProductsService {
                     id: body.id,
                     type: body.type,
                     place: body.place,
-                    author: session.id,
+                    author: userId,
                 })
             )
             return response.data
@@ -256,7 +258,7 @@ export class ProductsService {
         }
     }
 
-    async editProduct(body: ReqEditProduct) {
+    async editProduct(body: ReqEditProduct, userId: string) {
         const url = `${this.ONE_C_URL}/edit-product`
 
         try {
@@ -265,6 +267,7 @@ export class ProductsService {
                     id: body.id,
                     coment: body.comment,
                     cost: body.cost,
+                    author: userId,
                 })
             )
             return response.data
@@ -305,6 +308,28 @@ export class ProductsService {
             const response = await firstValueFrom(
                 this.httpService.post(url, {
                     ids: body.ids,
+                    author: userId,
+                })
+            )
+            return response.data
+        } catch (error) {
+            console.log(
+                `🆘🆘🆘 Ошибка при смене при отправке товаров в потерянные - ${error.response?.data}`
+            )
+            throw new UnauthorizedException(
+                error.response?.data?.text ||
+                    'Технические проблемы, попробуйте позже'
+            )
+        }
+    }
+    async addProductToZakazNaryad(body: ReqAddToZakazNaryad, userId: string) {
+        const url = `${this.ONE_C_URL}/filling-order/${body.orderId}`
+
+        try {
+            const response = await firstValueFrom(
+                this.httpService.post(url, {
+                    id: body.productId,
+                    person: userId,
                     author: userId,
                 })
             )

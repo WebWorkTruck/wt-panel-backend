@@ -6,6 +6,7 @@ export interface User {
     birth_date: string
     personal_phone: string
     work_phone: string
+    cart: string
     roles: {
         id: string
         title: string

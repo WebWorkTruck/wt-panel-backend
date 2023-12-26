@@ -26,7 +26,7 @@ export class SalesService {
             )
         }
     }
-    async addTrackNumber(body: SaleAddTrackNumberReq) {
+    async addTrackNumber(body: SaleAddTrackNumberReq, userId: string) {
         const url = `${this.ONE_C_URL}/add-track-number/${body.saleId}`
 
         if (body.trackNumber.includes('[CDK]')) {
@@ -40,7 +40,10 @@ export class SalesService {
         }
         try {
             const response = await firstValueFrom(
-                this.httpService.post(url, { track_number: body.trackNumber })
+                this.httpService.post(url, {
+                    track_number: body.trackNumber,
+                    author: userId,
+                })
             )
             const sale: SaleResponseDto = response.data
             return sale
@@ -54,10 +57,8 @@ export class SalesService {
             )
         }
     }
-    async createSale(body: CreateSaleDto) {
+    async createSale(body: CreateSaleDto, userId: string) {
         const createSaleUrl = 'create-sale'
-        console.log(body.date)
-
         try {
             const response = await firstValueFrom(
                 this.httpService.post(`${this.ONE_C_URL}/${createSaleUrl}`, {
@@ -65,6 +66,7 @@ export class SalesService {
                     org: body.org,
                     bill: body.bill,
                     date: body.date.replace(/-/g, ''),
+                    author: userId,
                 })
             )
             const sale: string = response.data

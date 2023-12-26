@@ -31,6 +31,7 @@ import { ReqLostProductsDto } from './dto/lost-products.dto'
 import { AuthGuard } from 'src/auth/auth.guard'
 import { SessionInfo } from 'src/auth/session-info.decorator'
 import { SessionInfoDto } from 'src/auth/dto/session.dto'
+import { ReqAddToZakazNaryad } from './dto/add-product-to-zakaz-naryad'
 
 @ApiTags('products')
 @Controller('products')
@@ -77,8 +78,12 @@ export class ProductsController {
     @ApiOperation({
         summary: 'Выдача товара в продаже',
     })
-    issueProduct(@Body() body: IssueProductInSaleReq) {
-        return this.productsService.issueProductInSale(body.id, body.pose)
+    @UseGuards(AuthGuard)
+    issueProduct(
+        @Body() body: IssueProductInSaleReq,
+        @SessionInfo() session: SessionInfoDto
+    ) {
+        return this.productsService.issueProductInSale(body, session.id)
     }
 
     @Post('change-product-in-app-sale')
@@ -86,8 +91,12 @@ export class ProductsController {
     @ApiOperation({
         summary: 'Изменение товара в заявке или продаже',
     })
-    changeProductInAppSale(@Body() body: ChangeProductInAppSale) {
-        return this.productsService.changeProductInAppSale(body)
+    @UseGuards(AuthGuard)
+    changeProductInAppSale(
+        @Body() body: ChangeProductInAppSale,
+        @SessionInfo() session: SessionInfoDto
+    ) {
+        return this.productsService.changeProductInAppSale(body, session.id)
     }
     @Post('move-product')
     @ApiOkResponse()
@@ -99,7 +108,7 @@ export class ProductsController {
         @Body() body: ReqMoveProduct,
         @SessionInfo() session: SessionInfoDto
     ) {
-        return this.productsService.moveProduct(body, session)
+        return this.productsService.moveProduct(body, session.id)
     }
     @Post('move-pallete')
     @ApiOkResponse()
@@ -126,8 +135,12 @@ export class ProductsController {
     @ApiOperation({
         summary: 'Изменение цены и комментарийя продукта',
     })
-    editProduct(@Body() body: ReqEditProduct) {
-        return this.productsService.editProduct(body)
+    @UseGuards(AuthGuard)
+    editProduct(
+        @Body() body: ReqEditProduct,
+        @SessionInfo() session: SessionInfoDto
+    ) {
+        return this.productsService.editProduct(body, session.id)
     }
     @Get('lost-products')
     @ApiOkResponse({ type: ProductsResponse })
@@ -148,5 +161,17 @@ export class ProductsController {
         @SessionInfo() session: SessionInfoDto
     ) {
         return this.productsService.removeToLost(body, session.id)
+    }
+    @Post('add-product-to-zakaz-naryad')
+    @ApiOkResponse()
+    @ApiOperation({
+        summary: 'Добавить товар в заказ наряд',
+    })
+    @UseGuards(AuthGuard)
+    addProductToZakazNaryad(
+        @Body() body: ReqAddToZakazNaryad,
+        @SessionInfo() session: SessionInfoDto
+    ) {
+        return this.productsService.addProductToZakazNaryad(body, session.id)
     }
 }

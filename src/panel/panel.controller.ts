@@ -74,7 +74,7 @@ export class PanelController {
         @SessionInfo() session: SessionInfoDto,
         @Body() body: MoveApplicationSaleDto
     ) {
-        return this.panelService.moveApplicationSale(session.id, body)
+        return this.panelService.moveApplicationSale(body, session.id)
     }
 
     @Get('organizations-bills')
@@ -145,7 +145,7 @@ export class PanelController {
         @Body() body: ReqRefusalDto,
         @SessionInfo() session: SessionInfoDto
     ) {
-        return this.panelService.refusalApplication(session.id, body)
+        return this.panelService.refusalApplication(body, session.id)
     }
 
     @Get('delivery-info')
@@ -173,7 +173,11 @@ export class PanelController {
     @ApiOperation({
         summary: 'Сформировать счёт',
     })
-    async createCheck(@Body() body: ReqCreateCheck) {
-        return this.panelService.createCheck(body)
+    @UseGuards(AuthGuard)
+    async createCheck(
+        @Body() body: ReqCreateCheck,
+        @SessionInfo() session: SessionInfoDto
+    ) {
+        return this.panelService.createCheck(body, session.id)
     }
 }

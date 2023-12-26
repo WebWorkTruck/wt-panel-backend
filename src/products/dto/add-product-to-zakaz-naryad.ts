@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger'
 
-export class ReqFindCartUserDto {
+export class ReqAddToZakazNaryad {
     @ApiProperty()
-    id: string
+    orderId: string
     @ApiProperty()
-    name: string
+    productId: string
 }

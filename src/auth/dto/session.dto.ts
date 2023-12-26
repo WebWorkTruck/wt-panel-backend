@@ -22,6 +22,9 @@ export class SessionInfoDto {
     @ApiProperty()
     work_phone: string
 
+    @ApiProperty()
+    cart: string
+
     @ApiProperty({ type: () => Role, isArray: true })
     roles: Role[]
 }

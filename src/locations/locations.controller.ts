@@ -22,6 +22,7 @@ export class LocationsController {
     getCountries() {
         return this.locationsService.getCountries()
     }
+
     @Get('region-by-country')
     @ApiOkResponse({
         type: [ResCountriesDto],
@@ -32,6 +33,7 @@ export class LocationsController {
     getRegionsByCountry(@Query() query: ReqRegionsByCountryDto) {
         return this.locationsService.getRegionsByCountry(query)
     }
+
     @Get('cities-by-region')
     @ApiOkResponse({
         type: [ResCountriesDto],

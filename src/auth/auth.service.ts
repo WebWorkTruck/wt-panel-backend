@@ -36,6 +36,7 @@ export class AuthService {
                 personal_phone: user.personal_phone,
                 work_phone: user.work_phone,
                 roles: user.roles,
+                cart: user.cart,
             })
             return { accessToken }
         } catch (error) {
